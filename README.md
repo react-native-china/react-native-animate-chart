@@ -1,2 +1,2 @@
 # react-native-animate-chart
-An chart library with animation based on react ART module.
+An chart library with animation based on React ART module.
