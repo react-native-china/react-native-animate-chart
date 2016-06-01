@@ -6,7 +6,7 @@ An chart library with animation based on React ART module.
 TODOS:
 - [x] Pie
 - [ ] Doughnut
-- [ ] Line chart
+- [x] Line chart
 - [ ] Histogram
 - [ ] Radar Chart
 
