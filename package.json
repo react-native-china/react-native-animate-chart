@@ -1,0 +1,29 @@
+{
+  "name": "react-native-animate-chart",
+  "version": "0.0.1",
+  "description": "animate chart library for react-native,based on react-native ART module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/react-native-china/react-native-animate-chart.git"
+  },
+  "keywords": [
+    "react-native",
+    "react",
+    "native",
+    "rn",
+    "chart",
+    "animate",
+    "animation",
+    "charts"
+  ],
+  "author": "oboo chin <cheng.12@live.cn> (github.com/obooman)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/react-native-china/react-native-animate-chart/issues"
+  },
+  "homepage": "https://github.com/react-native-china/react-native-animate-chart#readme"
+}
