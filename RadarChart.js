@@ -8,19 +8,12 @@ import {
 	Animated
 } from 'react-native';
 
-import calculateMethod from './implements'
-const {
-	getCirclePoint,
-	angleToRadian
-}  = calculateMethod;
-
 const {
 	Path,
 	Shape,
 	Surface,
-	Transform,
 } = ART;
-const { PI } = Math;
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -32,21 +25,30 @@ const cos = function( deg ){
 	return Math.cos((deg/360)*2*Math.PI)
 }
 
-class Rectangle extends Component{
+class RadarChart extends Component{
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {
 	  	num:12,
 	  	percentage:120,
-	  	pec:0
+	  	pec:0,
+	  	stokeColor:'#FFFFFF00'
 	  };
+
+	  this.draw = this.draw.bind(this)
+	}
+
+	componentWillMount(){
+		this.dotPointArrat = this.getBreakpointArray([
+								100,100,100,100,100
+							])
 	}
 
 	componentDidMount(){
-		var anim = new Animated.Value(0)
+		this.anim = new Animated.Value(0)
 
-		anim.addListener(( value ) => {
+		this.anim.addListener(( value ) => {
 
 			this.setState({
 				pec:value.value
@@ -55,12 +57,8 @@ class Rectangle extends Component{
 
 		setTimeout(() => {
 
-			Animated.spring(
-				anim,
-				{
-					toValue:1
-				}
-			).start();
+			this.draw()
+
 		},2000)
 	}
 
@@ -70,9 +68,7 @@ class Rectangle extends Component{
 				<Surface width = { SCREEN_WIDTH } height = { SCREEN_HEIGHT } visible = { true }>
 					{
 						this.getShapes.bind(this)(
-							this.getBreakpointArray([
-								2020,1290,3020,2910,1200,3990
-							])
+							this.dotPointArrat
 						)
 					}
 				</Surface>
@@ -90,9 +86,8 @@ class Rectangle extends Component{
 
 			return (
 				<Shape
-				onTouchEnd = { () => {alert(1)} }
 					d = { d }
-					stroke = '#115CC1'
+					stroke = { this.state.stokeColor }
 					strokeWidth = { 2 }
 					fill = '#F6E319'
 					key = { index + start }
@@ -101,22 +96,32 @@ class Rectangle extends Component{
 		})
 	}
 
+	draw(){
+
+		this.setState({
+			stokeColor:'#115CC1'
+		})
+
+		Animated.spring(
+			this.anim,
+			{
+				toValue:1
+			}
+		).start();
+	}
+
 	getBreakpointArray( pieData ){
-		var sumData = {
-			all:0
-		};
 
-		var breakpoints = [];
+		var length = pieData.length;
+		var breakpoints = new Array( length + 1 );
+		var degUnit = 360/length;
+		
+		for( var i=0;i<breakpoints.length;i++ ){
+			breakpoints[i] = degUnit*i
+		}
 
-		pieData.forEach(( value, index ) => {
+		console.log( 'breakpoints ->',breakpoints );
 
-			sumData.all += value;
-			sumData['value'+index] = sumData.all;
-		})
-
-		pieData.forEach(( value, index ) => {
-			breakpoints.push((sumData['value'+index]/sumData.all)*2*PI)
-		})
 
 		return breakpoints;
 	}
@@ -127,9 +132,9 @@ class Rectangle extends Component{
 
 		var Ox = SCREEN_WIDTH/2;
 		var Oy = SCREEN_HEIGHT/2;
-		var R = s == 0? 100*p*1.3 : 100*p;
-		var startDeg = s*p;
-		var endDeg = e*p;
+		var R = 100*p;
+		var startDeg = s;
+		var endDeg = e;
 		var circleInfo = {
 			Ox,Oy,R
 		}
@@ -150,15 +155,15 @@ class Rectangle extends Component{
 		if( deltaDeg < 180 ){
 			return (
 				path.lineTo( startDot.x, startDot.y )
-					.arcTo( endDot.x, endDot.y ,R,R)
+					.lineTo( endDot.x, endDot.y ,R,R)
 					.lineTo( Ox, Oy )
 			)
 		}
 
 		return (
 			path.lineTo( startDot.x, startDot.y )
-				.arcTo( halfDot.x, halfDot.y , R, R)
-				.arcTo( endDot.x, endDot.y , R, R)
+				.lineTo( halfDot.x, halfDot.y , R, R)
+				.lineTo( endDot.x, endDot.y , R, R)
 				.lineTo( Ox, Oy )
 		)
 	}
@@ -167,7 +172,10 @@ class Rectangle extends Component{
 
 		var { R, Ox, Oy } = circleInfo;
 
-		return getCirclePoint(  R, Ox, Oy, deg );
+		return {
+			x:R*cos( 90 - deg ) + Ox,
+			y:-R*sin( 90 - deg ) + Oy
+		}
 	}
 
 	getHalfCircle( deg, path , circleInfo){
@@ -179,4 +187,4 @@ class Rectangle extends Component{
 	}
 }
 
-export default Rectangle;
+export default RadarChart;

@@ -10,7 +10,7 @@ const {
 	Path,
 	Shape,
 	Surface,
-	Text,
+	Text
 } = ART;
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -59,15 +59,14 @@ var Xend = {
 	y:200 - 10
 }
 
-class LineChart extends Component{
+
+class BarChart extends Component{
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {
 	  	percentage:0
 	  };
-
-	  this.draw = this.draw.bind(this)
 	}
 
 	componentDidMount(){
@@ -77,9 +76,9 @@ class LineChart extends Component{
 
 		this.zoomPercentage = this.getZoomPercentage.bind(this)( data );
 
-		this.anim = new Animated.Value(0);
+		var anim = new Animated.Value(0);
 
-		this.anim.addListener(( value ) => {
+		anim.addListener(( value ) => {
 
 			this.setState({
 				percentage:value.value
@@ -87,8 +86,10 @@ class LineChart extends Component{
 		})
 
 		setTimeout(() => {
-			this.draw()
-		}, 2000)
+			Animated.spring(anim,{
+				toValue:1
+			}).start();
+		}, 3000)
 	}
 
 	render(){
@@ -113,17 +114,6 @@ class LineChart extends Component{
 				</Surface>
 			</View>
 		)
-	}
-
-	draw(){
-
-		Animated.spring(
-			this.anim,
-			{
-				toValue:1
-			}
-		).start();
-
 	}
 
 	getShape( dotsArray = data ){
@@ -219,6 +209,4 @@ class LineChart extends Component{
 	}
 }
 
-export default LineChart;
-
-// To define a line LineChart
+export default BarChart;
