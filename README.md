@@ -5,13 +5,13 @@
 # WANT TO JOIN ME?[LET ME KNOW](oboochin@gmail.com)
 
 # react-native-animate-chart
-An chart library with animation based on React ART module.
+An chart library with animation based on ART module.
 
 ##UNDER DEVELOPMENT
 
 TODOS:
-- [x] Pie
+- [ ] Pie
 - [ ] Doughnut
-- [x] Line chart
+- [ ] Line chart
 - [ ] Histogram
 - [ ] Radar Chart
