@@ -83,10 +83,16 @@ export default class Main extends Component{
 		return [
 			{
 				data:200,
-				normalColor:"",
-				activeColor:"",
+				normalFill:"",
+				activeFill:"",
 				normalStroke:"",
-				activeStroke:"",
+				activeStroke:""
+			},{
+				data:130,
+				normalFill:"",
+				activeFill:"",
+				normalStroke:"",
+				activeStroke:""
 			}
 		]
 	}
