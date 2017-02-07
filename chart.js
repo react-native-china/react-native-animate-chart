@@ -19,7 +19,14 @@ import {
 
 export default class RNAChart extends Component{
 	static propTypes = {
-	  type: PropTypes.oneOf(["line","bar","pie","doughnut","histogram","radar"]),
+	  	type: PropTypes.oneOf([
+		  	"line",
+		  	"bar",
+		  	"pie",
+		  	"doughnut",
+		  	"histogram",
+		  	"radar"
+  		]),
 	}
 
 	render(){
