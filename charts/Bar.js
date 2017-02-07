@@ -26,7 +26,11 @@ export default class Bar extends Component{
 			return a-b;
 		})
 
-		this.yRange = seriesData[0].data;
+		this.data = series.map(({data}) => {
+			return data;
+		})
+
+		this.yRange = roundingRange(this.data);
 	}
 
 	static propTypes = {
@@ -79,16 +83,21 @@ export default class Bar extends Component{
 			width,height
 		} = this.props;
 
+		const {
+			yRange
+		} = this;
+
 		const xPadding = 20;
 		const yPadding = 20;
 
 		const itemWidth = (width-2*xPadding)/series.length;
+		const areaHeight = (height-2*yPadding)
 		
 		// here bar width default to 40.api todo.
 		const barWidth = 40;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
-		const yAxis = data.data/this.max.data
+		const yAxis = data.data/yRange * areaHeight
 
 		return (
 			new Path()
