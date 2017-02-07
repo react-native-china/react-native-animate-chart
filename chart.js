@@ -1,4 +1,8 @@
-import React,{ Component } from 'react';
+import React,{
+	Component,
+	PropTypes
+} from 'react';
+
 import {
 	View,
 	Text
@@ -15,7 +19,7 @@ import {
 
 export default class RNAChart extends Component{
 	static propTypes = {
-	  type: React.PropTypes.oneOf(["line","bar","pie","doughnut","histogram","radar"])
+	  type: PropTypes.oneOf(["line","bar","pie","doughnut","histogram","radar"]),
 	}
 
 	render(){
