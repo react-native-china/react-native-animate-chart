@@ -14,6 +14,10 @@ import {
 }  form './charts'
 
 export default class RNAChart extends Component{
+	static propTypes = {
+	  type: React.PropTypes.oneOf(["line","bar","pie","doughnut","histogram","radar"])
+	}
+
 	render(){
 		return this.getChart()
 	}
