@@ -2,7 +2,7 @@
   "name": "react-native-animate-chart",
   "version": "0.0.1",
   "description": "animate chart library for react-native,based on react-native ART module.",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
