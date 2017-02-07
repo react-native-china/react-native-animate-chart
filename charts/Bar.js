@@ -7,11 +7,26 @@ import {
 	ART
 } from 'react-native';
 
+import {
+
+} from "../implements";
+
 export default class Bar extends Component{
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {};
+	}
+
+	componentWillMount(){
+		const { series } = this.props;
+		let seriesData = [...series];
+
+		seriesData.sort((a,b) => {
+			return a-b;
+		})
+
+		this.yRange = seriesData[0].data;
 	}
 
 	static propTypes = {
@@ -42,9 +57,46 @@ export default class Bar extends Component{
 
 		return series.map((data,index) => {
 			return (
-				<Shape d={}></Shape>
+				<Shape 
+					d={ this.getBarD(data,index) }
+					fill={
+						this.state.highlight == index ?
+						data.activeFill : 
+						data.normalFill
+					}
+					stroke={
+						this.state.highlight == index ?
+						data.activeStroke : 
+						data.normalStroke
+					}
+				/>
 			)
 		})
+	}
+
+	getBarD = (data,index) => {
+		const {
+			width,height
+		} = this.props;
+
+		const xPadding = 20;
+		const yPadding = 20;
+
+		const itemWidth = (width-2*xPadding)/series.length;
+		
+		// here bar width default to 40.api todo.
+		const barWidth = 40;
+
+		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
+		const yAxis = data.data/this.max.data
+
+		return (
+			new Path()
+				.moveTo(xAxis,)
+				.lineTo(xAxis,)
+				.lineTo(xAxis+barWidth,)
+				.lineTo(xAxis+barWidth,)
+		)
 	}
 }
 

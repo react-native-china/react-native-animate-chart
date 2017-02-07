@@ -48,4 +48,11 @@ export default class calculateMethods {
 		var pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
 		var deg = ( pointX - originX / radius )
 	}
+
+	/*
+	 * Get a larger 10ex number of given number array to be y axis range.
+	 **/
+
+	static roundingRange(datas){
+	}
 }
