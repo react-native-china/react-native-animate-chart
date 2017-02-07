@@ -68,11 +68,14 @@ export default class calculateMethods {
 	){
 		if( !datas.length ) return;
 
-		const maxValue = max.apply(null,datas);
-		const minValue = min.apply(null,datas);
+		const maxValue = max.apply(null,datas)
+		const minValue = min.apply(null,datas)
 
-		const delta = maxValue - minValue;
-		const deltaRound = pow(10,(''+delta).length);
+		const maxValueLength = ( '' + maxValue ).length
+		const minValueLength = ( '' + minValue ).length
+
+		const delta = maxValueLength - minValueLength;
+		const deltaRound = pow(10,delta);
 
 		return (
 			parseInt(maxValue/deltaRound) + 1
