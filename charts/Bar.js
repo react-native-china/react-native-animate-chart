@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import {
-
+	roundingRange
 } from "../implements";
 
 export default class Bar extends Component{

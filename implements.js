@@ -1,4 +1,14 @@
-const { sin, cos, PI, sqrt, pow, max, min, round, random } = Math;
+
+// http://stackoverflow.com/questions/10359907/array-sum-and-average/40681278#40681278
+Math.sum = function (...a){
+    return Array.prototype.reduce.call(a,(a,b) => a+b)
+}
+
+Math.avg = function(...a){
+    return this.sum(...a)/a.length;
+}
+
+const { sin, cos, PI, sqrt, pow, max, min, round, random, sum, avg } = Math;
 
 export default class calculateMethods {
 
@@ -45,14 +55,27 @@ export default class calculateMethods {
 		startDeg	: Number = 0, 
 		endDeg		: Number = 0 
 	){
-		var pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
-		var deg = ( pointX - originX / radius )
+		const pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
+		const deg = ( pointX - originX / radius )
 	}
 
 	/*
 	 * Get a larger 10ex number of given number array to be y axis range.
 	 **/
 
-	static roundingRange(datas){
+	static roundingRange(
+		datas		: Array = []
+	){
+		if( !datas.length ) return;
+
+		const maxValue = max.apply(null,datas);
+		const minValue = min.apply(null,datas);
+
+		const delta = maxValue - minValue;
+		const deltaRound = pow(10,(''+delta).length);
+
+		return (
+			parseInt(maxValue/deltaRound) + 1
+		)*deltaRound;
 	}
 }
