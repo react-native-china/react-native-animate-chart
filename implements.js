@@ -47,6 +47,5 @@ export default class calculateMethods {
 	){
 		var pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
 		var deg = ( pointX - originX / radius )
-
 	}
 }
