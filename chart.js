@@ -8,14 +8,16 @@ import {
 	Text
 } from 'react-native'
 
-import {
+import charts from './charts'
+
+const {
 	Bar,
-	Doughnut,
-	Histogram,
 	Line,
 	Pie,
-	Radar
-} from './charts'
+	Doughnut,
+	Histogram,
+	Radar,
+} = charts;
 
 export default class RNAChart extends Component{
 	static propTypes = {
@@ -29,20 +31,32 @@ export default class RNAChart extends Component{
   		]),
 	}
 
+	componentWillMount(){
+		console.log(this.getChart());
+	}
+
 	render(){
 		return (
-			<Text>Great</Text>
+			<View style={{backgroundColor:'#F8F8F8'}}>
+				{ this.getChart() }
+			</View>
 		)
 	}
 
 	getChart = () => {
-		switch( this.props.type ){
-			case "line":return <Line { ...this.props }/>;
-			case "bar":return <Bar { ...this.props }/>;
-			case "pie":return <Pie { ...this.props }/>;
-			case "doughnut":return <Doughnut { ...this.props }/>;
-			case "histogram":return <Histogram { ...this.props }/>;
-			case "radar":return <Radar { ...this.props }/>;
+		const chartMap = {
+			bar:Bar,
+			lne:Line,
+			pie:Pie,
+			doughnut:Doughnut,
+			histogram:Histogram,
+			radar:Radar
 		}
+
+		const Component = chartMap[this.props.type];
+
+		return (
+			<Bar {...this.props}/>
+		)
 	}
 }

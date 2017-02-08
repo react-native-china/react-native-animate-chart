@@ -4,18 +4,41 @@ import React, {
 } from 'react';
 
 import {
-	ART
+	ART,
+	View
 } from 'react-native';
 
 import {
 	roundingRange
 } from "../implements";
 
+const {
+    Surface,
+    Shape,
+    Group,
+    Path,
+    Text,
+    ClippingRectangle,
+    LinearGradient,
+    RadialGradient,
+    Pattern,
+    Transform
+} = ART;
+
 export default class Bar extends Component{
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {};
+	  this.state = {
+	  	highlight:1
+	  };
+	}
+
+	static propTypes = {
+		series: PropTypes.array,
+		subtitle:PropTypes.string,
+		title:PropTypes.string,
+		tootip:PropTypes.object
 	}
 
 	componentWillMount(){
@@ -31,13 +54,13 @@ export default class Bar extends Component{
 		})
 
 		this.yRange = roundingRange(this.data);
-	}
 
-	static propTypes = {
-		series: PropTypes.array,
-		subtitle:PropTypes.string,
-		title:PropTypes.string,
-		tootip:PropTypes.object
+		this.padding = {
+			top:100,
+			right:20,
+			bottom:50,
+			left:20
+		}
 	}
 
 	render(){
@@ -47,10 +70,24 @@ export default class Bar extends Component{
 		} = this.props;
 
 		return (
-			<Surface>
-				{ this.getBars() }
-				{ this.getCoords() }
-			</Surface>
+			<View>
+				<Surface width={this.props.width} height={this.props.height} visible={true}>
+					{ this.getBars() }
+					{ this.getCoords() }
+					<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
+						fill = "#4D4D4D" 
+						alignment='center'
+						x={160}
+						y={30}
+						>React native is really awesome</Text>
+					<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
+						fill = "#9D9D9D" 
+						alignment='center'
+						x={160}
+						y={60}
+						>I mean it</Text>
+				</Surface>
+			</View>
 		)
 	}
 
@@ -62,6 +99,7 @@ export default class Bar extends Component{
 		return series.map((data,index) => {
 			return (
 				<Shape 
+					key = { index }
 					d={ this.getBarD(data,index) }
 					fill={
 						this.state.highlight == index ?
@@ -73,6 +111,11 @@ export default class Bar extends Component{
 						data.activeStroke : 
 						data.normalStroke
 					}
+
+					strokeWidth = {2}
+
+					strokeCap="butt"
+					strokeJoin="miter"
 				/>
 			)
 		})
@@ -80,31 +123,60 @@ export default class Bar extends Component{
 
 	getBarD = (data,index) => {
 		const {
-			width,height
+			width,height,series
 		} = this.props;
 
 		const {
-			yRange
+			yRange,padding:{
+				left,top,right,bottom
+			}
 		} = this;
 
-		const xPadding = 20;
-		const yPadding = 20;
 
-		const itemWidth = (width-2*xPadding)/series.length;
-		const areaHeight = (height-2*yPadding)
+		const itemWidth = (width-left-right)/series.length;
+		const areaHeight = (height-top-bottom)
 		
-		// here bar width default to 40.api todo.
-		const barWidth = 40;
+		const barWidth = itemWidth*0.6;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
-		const yAxis = data.data/yRange * areaHeight
+		const yAxis = height - data.data/yRange * areaHeight - bottom
 
 		return (
 			new Path()
-				.moveTo(xAxis,)
-				.lineTo(xAxis,)
-				.lineTo(xAxis+barWidth,)
-				.lineTo(xAxis+barWidth,)
+				.moveTo(xAxis,height - bottom)
+				.lineTo(xAxis,yAxis)
+				.lineTo(xAxis+barWidth,yAxis)
+				.lineTo(xAxis+barWidth,height - bottom)
+		)
+	}
+
+	getCoords(){
+		return (
+			<Shape 
+				d={ this.getCoordsD() } 
+				stroke="#D4D4D4" 
+				strokeWidth="2"
+				></Shape>
+		)
+	}
+
+	getCoordsD(){
+
+		const {
+			width,height,series
+		} = this.props;
+
+		const {
+			padding:{
+				left,top,right,bottom
+			}
+		} = this;
+
+		return (
+			new Path()
+				.moveTo(left,top)
+				.lineTo(left,height - bottom)
+				.lineTo(width - right,height - bottom)
 		)
 	}
 }
