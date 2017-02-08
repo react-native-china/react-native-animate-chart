@@ -4,7 +4,7 @@
   "description": "animate chart library for react-native,based on react-native ART module.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/react-native-china/react-native-animate-chart/issues"
   },
-  "homepage": "https://github.com/react-native-china/react-native-animate-chart#readme"
+  "homepage": "https://github.com/react-native-china/react-native-animate-chart#readme",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "jest": "^18.1.0"
+  }
 }

@@ -10,75 +10,72 @@ Math.avg = function(...a){
 
 const { sin, cos, PI, sqrt, pow, max, min, round, random, sum, avg } = Math;
 
-export default class calculateMethods {
+/*
+ * Get a dot coordinate on the given circle
+ * All of these params are necessary for generating.
+ * @param deg should in radian( 2*PI ) format.NOT angle( 360° ).
+ *
+ **/
 
-	/*
-	 * Get a dot coordinate on the given circle
-	 * All of these params are necessary for generating.
-	 * @param deg should in radian( 2*PI ) format.NOT angle( 360° ).
-	 *
-	 **/
+export function getCirclePoint( 
+	radius = 0, 
+	originX = 0, 
+	originY = 0, 
+	deg = 0
+){
 
-	static getCirclePoint( 
-		radius	: Number = 0, 
-		originX	: Number = 0, 
-		originY	: Number = 0, 
-		deg		: Number = 0
-	){
-
-		return {
-			x:radius*cos( PI/2 - deg ) + originX,
-			y:-radius*sin( PI/2 - deg ) + originY
-		}
+	return {
+		x:radius*cos( PI/2 - deg ) + originX,
+		y:-radius*sin( PI/2 - deg ) + originY
 	}
+}
 
-	/*
-	 * Convert angle number to raduan number.
-	 **/
+/*
+ * Convert angle number to raduan number.
+ **/
 
-	static angleToRadian( angle :Number = 0 ){
-		return angle/180*PI
-	}
+export function angleToRadian( angle = 0 ){
+	return angle/180*PI
+}
 
 
-	/*
-	 * Mathod to varify whether dot withing a sector filed.
-	 **/
-	 
-	static isDotWithinPie( 
-		radius		: Number = 0, 
-		originX		: Number = 0, 
-		originY		: Number = 0, 
-		shapeDeg	: Number = 0, 
-		pointX		: Number = 0, 
-		pointY		: Number = 0, 
-		startDeg	: Number = 0, 
-		endDeg		: Number = 0 
-	){
-		const pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
-		const deg = ( pointX - originX / radius )
-	}
+/*
+ * Mathod to varify whether dot withing a sector filed.
+ **/
+ 
+export function isDotWithinPie( 
+	radius = 0, 
+	originX = 0, 
+	originY = 0, 
+	shapeDeg = 0, 
+	pointX = 0, 
+	pointY = 0, 
+	startDeg = 0, 
+	endDeg = 0 
+){
+	const pointDelta = sqrt( pow(pointX - originX,2) + pow(pointY - originY,2) );
+	const deg = ( pointX - originX / radius )
+}
 
-	/*
-	 * Get a larger 10ex number of given number array to be y axis range.
-	 **/
+/*
+ * Get a larger 10ex number of given number array to be y axis range.
+ **/
 
-	static roundingRange(
-		datas		: Array = []
-	){
-		if( !datas.length ) return;
+export function roundingRange(
+	datas = []
+){
+	if( !datas.length ) return;
 
-		const maxValue = max.apply(null,datas)
-		const minValue = min.apply(null,datas)
+	const maxValue = max.apply(null,datas)
+	const minValue = min.apply(null,datas)
 
-		const maxValueLength = ( '' + maxValue ).length
-		const minValueLength = ( '' + minValue ).length
+	const maxValueLength = ( '' + maxValue ).length
+	const minValueLength = ( '' + minValue ).length
 
-		const delta = maxValueLength - minValueLength;
-		const deltaRound = pow(10,delta);
+	const delta = maxValueLength - minValueLength;
+	const deltaRound = pow(10,delta);
 
-		return (
-			parseInt(maxValue/deltaRound) + 1
-		)*deltaRound;
-	}
+	return (
+		parseInt(maxValue/deltaRound) + 1
+	)*deltaRound;
 }
