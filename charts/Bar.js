@@ -5,7 +5,8 @@ import React, {
 
 import {
 	ART,
-	View
+	View,
+	Animated
 } from 'react-native';
 
 import {
@@ -61,6 +62,30 @@ export default class Bar extends Component{
 			bottom:50,
 			left:20
 		}
+	}
+
+	componentDidMount(){
+		let animationHub = [];
+
+		this.props.series.forEach(({data},index) => {
+			const animation = new Animated.Value(0);
+
+			animationHub.push(Animated.spring(animation,{toValue:1}));
+
+			this.setState({
+				[`progress${index}`]:0
+			})
+
+			animation.addListener((n) => {
+				this.setState({
+					[`progress${index}`]:n.value
+				})
+			})
+		})
+
+		console.log(animationHub);
+
+		Animated.stagger(200,animationHub).start()
 	}
 
 	render(){
@@ -132,6 +157,7 @@ export default class Bar extends Component{
 			}
 		} = this;
 
+		const progress = this.state[`progress${index}`] || 0;
 
 		const itemWidth = (width-left-right)/series.length;
 		const areaHeight = (height-top-bottom)
@@ -139,7 +165,7 @@ export default class Bar extends Component{
 		const barWidth = itemWidth*0.6;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
-		const yAxis = height - data.data/yRange * areaHeight - bottom
+		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
 
 		return (
 			new Path()
