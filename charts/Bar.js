@@ -57,7 +57,9 @@ export default class Bar extends Component{
 		this.yRange = roundingRange(this.data);
 
 		this.padding = {
-			top:100,
+			top:
+				(this.props.title ? 50 : 0) + 
+				( this.props.subtitle ? 50 : 0) + 20,
 			right:20,
 			bottom:50,
 			left:20
@@ -83,8 +85,6 @@ export default class Bar extends Component{
 			})
 		})
 
-		console.log(animationHub);
-
 		Animated.stagger(200,animationHub).start()
 	}
 
@@ -99,18 +99,8 @@ export default class Bar extends Component{
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getBars() }
 					{ this.getCoords() }
-					<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-						fill = "#4D4D4D" 
-						alignment='center'
-						x={160}
-						y={30}
-						>React native is really awesome</Text>
-					<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-						fill = "#9D9D9D" 
-						alignment='center'
-						x={160}
-						y={60}
-						>I mean it</Text>
+					{ this.getTitle() }
+					{ this.getSubtitle() }
 				</Surface>
 			</View>
 		)
@@ -203,6 +193,29 @@ export default class Bar extends Component{
 				.moveTo(left,top)
 				.lineTo(left,height - bottom)
 				.lineTo(width - right,height - bottom)
+		)
+	}
+
+	getTitle(){
+
+		return (
+			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
+				fill = "#4D4D4D" 
+				alignment='center'
+				x={160}
+				y={30}
+				>{this.props.title}</Text>
+		)
+	}
+
+	getSubtitle(){
+		return (
+			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
+				fill = "#9D9D9D" 
+				alignment='center'
+				x={160}
+				y={60}
+				>{this.props.subtitle}</Text>
 		)
 	}
 }
