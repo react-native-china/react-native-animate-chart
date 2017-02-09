@@ -16,11 +16,17 @@ export default class GestureAware extends Component{
 		onEnd: PropTypes.func,
 	}
 
-	componentWillMount(){
-		this.onStart = this.props.onStart || function(){};
-		this.onMove = this.props.onMove || function(){};
-		this.onEnd = this.props.onEnd || function(){};
+	static defaultProps = {
+	  onStart: function(){},
+	  onMove: function(){},
+	  onEnd: function(){}
+	}
 
+	componentWillMount(){
+		this.onStart = this.props.onStart;
+		this.onMove = this.props.onMove;
+		this.onEnd = this.props.onEnd;
+		
 		this._panResponder = PanResponder.create({
 		  onStartShouldSetPanResponder: () => true,
 		  onMoveShouldSetPanResponder: () => true,
@@ -46,16 +52,30 @@ export default class GestureAware extends Component{
 		})
 	}
 
-	_grantHandler = () => {
-		this.onStart()
+	_grantHandler = (e, gestureState) => {
+		this.getLayout((x, y, w, h, pageX, pageY) => {
+			this.setState({
+				position:{
+					left:pageX,
+					top:pageY
+				}
+			})
+		});
 	}
 
-	_moveHandler = () => {
-		this.onMove()
+	_moveHandler = (e, gestureState) => {
+		this.onMove({
+			...gestureState,
+			moveY:gestureState.moveY - this.state.position.top
+		})
 	}
 	
-	_endHandler = () => {
-		this.onEnd()
+	_endHandler = (e, gestureState) => {
+
+		this.onEnd({
+			moveX:gestureState.moveX,
+			moveY:gestureState.moveY - this.state.position.top
+		})
 	}
 
 	render(){

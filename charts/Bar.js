@@ -33,7 +33,8 @@ export default class Bar extends Component{
 	  super(props);
 	
 	  this.state = {
-	  	highlight:1
+	  	highlight:-1,
+	  	crossHair:{}
 	  };
 	}
 
@@ -107,6 +108,7 @@ export default class Bar extends Component{
 					{ this.getCoords() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
+					{ this.getCrossHair() }
 				</Surface>
 			</GestureAware>
 		)
@@ -225,9 +227,92 @@ export default class Bar extends Component{
 		)
 	}
 
-	onStart = () => {}
-	onMove = () => {}
-	onEnd = () => {}
+	getCrossHair = () => {
+		let {
+			crossHair:{
+				x,y
+			}
+		} = this.state
+
+		const {
+			top,left,right,bottom
+		} = this.padding
+
+		const {
+			height,width
+		} = this.props;
+
+		if( x > 0 && x < left ) x = left;
+		if( x > 0 && x > width - right ) x = width - right;
+
+		if( x > 0 && y < top ) y = top;
+		if( x > 0 && y > height - bottom ) y = height - bottom;
+		
+		const yPos = y > top ? y : top;
+
+		return (
+			<Shape d={
+				x > 0 && y > 0 ? 
+				(
+					new Path()
+						.moveTo(x,top)
+						.lineTo(x,height - bottom)
+						.moveTo(left,y)
+						.lineTo(width - right,y)
+				)
+				: ""
+			} stroke="#4D4D4D" strokeWidth="0.2"></Shape>
+		)
+	}
+
+	onStart = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);
+	}
+
+	onMove = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);		
+	}
+
+	setCrossHair = (ev) => {
+
+		this.setState({
+			crossHair:{
+				x:ev.moveX,
+				y:ev.moveY
+			}
+		})
+
+		const {
+			series,width,height
+		} = this.props
+
+		const {
+			left,top,right,bottom
+		} = this.padding
+
+		const itemWidth = (width-left-right)/series.length;
+		const relativeX = ev.moveX - left;
+
+		if( relativeX%itemWidth > itemWidth*0.2 && relativeX%itemWidth < itemWidth*0.8 ){
+			const index = parseInt(relativeX/itemWidth);
+
+			this.setState({
+				highlight:index
+			})
+		}
+	}
+
+	onEnd = () => {
+		if( this.props.disableCorssHair ) return;
+
+		this.setState({
+			crossHair:{
+				x:-100,
+				y:-100,
+			},
+			highlight:-1
+		})
+	}
 }
 
 
