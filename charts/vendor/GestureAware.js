@@ -3,12 +3,17 @@ import React, {
 	PropTypes
 } from 'react';
 
+import {
+	PanResponder,
+	View
+} from 'react-native'
+
 export default class GestureAware extends Component{
 
 	static propTypes = {
-		onStart: React.PropTypes.function,
-		onMove: React.PropTypes.function,
-		onEnd: React.PropTypes.function,
+		onStart: PropTypes.func,
+		onMove: PropTypes.func,
+		onEnd: PropTypes.func,
 	}
 
 	componentWillMount(){
@@ -27,21 +32,30 @@ export default class GestureAware extends Component{
 	}
 
 	componentDidMount(){
+		console.log(this.props);
+
 		setTimeout(() => {
-			this.getLayout();
+			this.getLayout((x, y, w, h, pageX, pageY) => {
+				this.setState({
+					position:{
+						left:pageX,
+						top:pageY
+					}
+				})
+			});
 		})
 	}
 
-	_grantHandler(){
-
+	_grantHandler = () => {
+		this.onStart()
 	}
 
-	_moveHandler(){
-
+	_moveHandler = () => {
+		this.onMove()
 	}
 	
-	_endHandler(){
-
+	_endHandler = () => {
+		this.onEnd()
 	}
 
 	render(){

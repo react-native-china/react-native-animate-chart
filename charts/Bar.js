@@ -13,6 +13,8 @@ import {
 	roundingRange
 } from "../implements";
 
+import GestureAware from './vendor/GestureAware';
+
 const {
     Surface,
     Shape,
@@ -95,14 +97,18 @@ export default class Bar extends Component{
 		} = this.props;
 
 		return (
-			<View>
+			<GestureAware
+				onStart = { this.onStart }
+				onMove = { this.onMove }
+				onEnd = { this.onEnd }
+				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getBars() }
 					{ this.getCoords() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
 				</Surface>
-			</View>
+			</GestureAware>
 		)
 	}
 
@@ -218,6 +224,10 @@ export default class Bar extends Component{
 				>{this.props.subtitle}</Text>
 		)
 	}
+
+	onStart = () => {}
+	onMove = () => {}
+	onEnd = () => {}
 }
 
 
