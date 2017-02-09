@@ -5,12 +5,15 @@ import React, {
 
 import {
 	ART,
-	View
+	View,
+	Animated
 } from 'react-native';
 
 import {
 	roundingRange
 } from "../implements";
+
+import GestureAware from './vendor/GestureAware';
 
 const {
     Surface,
@@ -30,7 +33,8 @@ export default class Bar extends Component{
 	  super(props);
 	
 	  this.state = {
-	  	highlight:1
+	  	highlight:-1,
+	  	crossHair:{}
 	  };
 	}
 
@@ -56,11 +60,35 @@ export default class Bar extends Component{
 		this.yRange = roundingRange(this.data);
 
 		this.padding = {
-			top:100,
+			top:
+				(this.props.title ? 50 : 0) + 
+				( this.props.subtitle ? 50 : 0) + 20,
 			right:20,
 			bottom:50,
 			left:20
 		}
+	}
+
+	componentDidMount(){
+		let animationHub = [];
+
+		this.props.series.forEach(({data},index) => {
+			const animation = new Animated.Value(0);
+
+			animationHub.push(Animated.spring(animation,{toValue:1}));
+
+			this.setState({
+				[`progress${index}`]:0
+			})
+
+			animation.addListener((n) => {
+				this.setState({
+					[`progress${index}`]:n.value
+				})
+			})
+		})
+
+		Animated.stagger(200,animationHub).start()
 	}
 
 	render(){
@@ -70,24 +98,19 @@ export default class Bar extends Component{
 		} = this.props;
 
 		return (
-			<View>
+			<GestureAware
+				onStart = { this.onStart }
+				onMove = { this.onMove }
+				onEnd = { this.onEnd }
+				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getBars() }
 					{ this.getCoords() }
-					<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-						fill = "#4D4D4D" 
-						alignment='center'
-						x={160}
-						y={30}
-						>React native is really awesome</Text>
-					<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-						fill = "#9D9D9D" 
-						alignment='center'
-						x={160}
-						y={60}
-						>I mean it</Text>
+					{ this.getTitle() }
+					{ this.getSubtitle() }
+					{ this.getCrossHair() }
 				</Surface>
-			</View>
+			</GestureAware>
 		)
 	}
 
@@ -132,6 +155,7 @@ export default class Bar extends Component{
 			}
 		} = this;
 
+		const progress = this.state[`progress${index}`] || 0;
 
 		const itemWidth = (width-left-right)/series.length;
 		const areaHeight = (height-top-bottom)
@@ -139,7 +163,7 @@ export default class Bar extends Component{
 		const barWidth = itemWidth*0.6;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
-		const yAxis = height - data.data/yRange * areaHeight - bottom
+		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
 
 		return (
 			new Path()
@@ -178,6 +202,116 @@ export default class Bar extends Component{
 				.lineTo(left,height - bottom)
 				.lineTo(width - right,height - bottom)
 		)
+	}
+
+	getTitle(){
+
+		return (
+			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
+				fill = "#4D4D4D" 
+				alignment='center'
+				x={160}
+				y={30}
+				>{this.props.title}</Text>
+		)
+	}
+
+	getSubtitle(){
+		return (
+			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
+				fill = "#9D9D9D" 
+				alignment='center'
+				x={160}
+				y={60}
+				>{this.props.subtitle}</Text>
+		)
+	}
+
+	getCrossHair = () => {
+		let {
+			crossHair:{
+				x,y
+			}
+		} = this.state
+
+		const {
+			top,left,right,bottom
+		} = this.padding
+
+		const {
+			height,width
+		} = this.props;
+
+		if( x > 0 && x < left ) x = left;
+		if( x > 0 && x > width - right ) x = width - right;
+
+		if( x > 0 && y < top ) y = top;
+		if( x > 0 && y > height - bottom ) y = height - bottom;
+		
+		const yPos = y > top ? y : top;
+
+		return (
+			<Shape d={
+				x > 0 && y > 0 ? 
+				(
+					new Path()
+						.moveTo(x,top)
+						.lineTo(x,height - bottom)
+						.moveTo(left,y)
+						.lineTo(width - right,y)
+				)
+				: ""
+			} stroke="#4D4D4D" strokeWidth="0.2"></Shape>
+		)
+	}
+
+	onStart = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);
+	}
+
+	onMove = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);		
+	}
+
+	setCrossHair = (ev) => {
+
+		this.setState({
+			crossHair:{
+				x:ev.moveX,
+				y:ev.moveY
+			}
+		})
+
+		const {
+			series,width,height
+		} = this.props
+
+		const {
+			left,top,right,bottom
+		} = this.padding
+
+		const itemWidth = (width-left-right)/series.length;
+		const relativeX = ev.moveX - left;
+
+		if( relativeX%itemWidth > itemWidth*0.2 && relativeX%itemWidth < itemWidth*0.8 ){
+			const index = parseInt(relativeX/itemWidth);
+
+			this.setState({
+				highlight:index
+			})
+		}
+	}
+
+	onEnd = () => {
+		if( this.props.disableCorssHair ) return;
+
+		this.setState({
+			crossHair:{
+				x:-100,
+				y:-100,
+			},
+			highlight:-1
+		})
 	}
 }
 

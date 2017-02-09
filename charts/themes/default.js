@@ -1,6 +1,22 @@
-export default {
-	normalFill:"rgba(73,144,226,0.3)",
-	activeFill:"#0000FF",
-	normalStroke:"#4990E2",
-	activeStroke:"#4990E2"
-}
+export const default = {
+	normal:{
+		stroke:,
+		fill:
+	},
+	active:{
+		stroke:
+		fill:
+	}
+	backgroundColor:,
+	title:{
+		color:,
+		size:
+	},
+	subtitle:{
+		color:,
+		size:
+	},
+	coords:{
+		color:,
+		width:
+	}

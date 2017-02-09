@@ -3,16 +3,19 @@ import {
 	Animated
 } from 'react-native'
 
-export default (type) => {
-	// type = oneOf['linear','spring','bounce']
 
-	return function( callback=()=>{} ){
-		var animate = new Animated.Value(0);
+export function elastic(){
 
-		Animated.spring(animate,{
-			toValue:1
-		}).play();
+}
 
-		animate.addListener(callback)
-	}
+export function stagger(){
+
+}
+
+export function linear(){
+
+}
+
+export function bounce(){
+
 }
