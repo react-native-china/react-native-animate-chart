@@ -20,4 +20,3 @@ export const default = {
 		color:,
 		width:
 	}
-}
