@@ -157,10 +157,10 @@ export default class Bar extends Component{
 
 		const progress = this.state[`progress${index}`] || 0;
 
-		const itemWidth = (width-left-right)/series.length;
 		const areaHeight = (height-top-bottom)
 		
 		const barWidth = itemWidth*0.6;
+		const itemWidth = (width-left-right)/series.length;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
 		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
