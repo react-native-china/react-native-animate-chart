@@ -38,12 +38,11 @@ export default class Main extends Component{
 	}
 
 	getAnimation() {
-		return {
-			enable:true,
-			timing-function:'cubic-bezier(.2,.4,.8,.4)',
-			duration:2000,
-			stagger:true
-		}
+		return (
+			new Stagger(
+				new Linear(1000)
+			,300);
+		);
 	}
 
 	getSubtitle = () => "Data Anaylisis"
