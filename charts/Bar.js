@@ -61,6 +61,7 @@ export default class Bar extends Component{
 
 		this.padding = {
 			top:
+				// releated to font size of title and subtitle.
 				(this.props.title ? 50 : 0) + 
 				( this.props.subtitle ? 50 : 0) + 20,
 			right:20,
@@ -70,6 +71,7 @@ export default class Bar extends Component{
 	}
 
 	componentDidMount(){
+		// need to be refactor with timing function.
 		let animationHub = [];
 
 		this.props.series.forEach(({data},index) => {
@@ -120,6 +122,8 @@ export default class Bar extends Component{
 		} = this.props;
 
 		return series.map((data,index) => {
+
+			// theme info required.
 			return (
 				<Shape 
 					key = { index }

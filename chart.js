@@ -56,7 +56,7 @@ export default class RNAChart extends Component{
 		const Component = chartMap[this.props.type];
 
 		return (
-			<Bar {...this.props}/>
+			<Line {...this.props}/>
 		)
 	}
 }

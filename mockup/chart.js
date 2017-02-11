@@ -38,12 +38,11 @@ export default class Main extends Component{
 	}
 
 	getAnimation() {
-		return {
-			enable:true,
-			timing-function:'cubic-bezier(.2,.4,.8,.4)',
-			duration:2000,
-			stagger:true
-		}
+		return (
+			new Stagger(
+				new Linear(1000)
+			,300);
+		);
 	}
 
 	getSubtitle = () => "Data Anaylisis"
@@ -82,17 +81,43 @@ export default class Main extends Component{
 	getSeries() {
 		return [
 			{
-				data:200,
-				normalFill:"",
-				activeFill:"",
-				normalStroke:"",
-				activeStroke:""
-			},{
-				data:130,
-				normalFill:"",
-				activeFill:"",
-				normalStroke:"",
-				activeStroke:""
+				theme:new Theme({
+					stroke:{
+						active:"",
+						normal:""
+					},
+					fill:{
+						active:"",
+						normal:""
+					}
+				}),
+				data:[200,300,400,600]
+			},
+			{
+				theme:new Theme({
+					stroke:{
+						active:"",
+						normal:""
+					},
+					fill:{
+						active:"",
+						normal:""
+					}
+				}),
+				data:[200,300,400,600]
+			},
+			{
+				theme:new Theme({
+					stroke:{
+						active:"",
+						normal:""
+					},
+					fill:{
+						active:"",
+						normal:""
+					}
+				}),
+				data:[200,300,400,600]
 			}
 		]
 	}
