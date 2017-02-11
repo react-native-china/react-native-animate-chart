@@ -18,15 +18,15 @@ const { sin, cos, PI, sqrt, pow, max, min, round, random, sum, avg } = Math;
  **/
 
 export function getCirclePoint( 
-	radius = 0, 
 	originX = 0, 
 	originY = 0, 
+	radius = 0, 
 	deg = 0
 ){
 
 	return {
-		x:radius*cos( PI/2 - deg ) + originX,
-		y:-radius*sin( PI/2 - deg ) + originY
+		x:radius*cos( deg ) + originX,
+		y:radius*sin( deg ) + originY
 	}
 }
 

@@ -81,20 +81,32 @@ export default class Line extends Component{
 
 	getLines = () => {
 		return (
-			<Shape d={this.getLinesD()} 
-				stroke="#4d4d4d"
-				fill={new LinearGradient({
-			    	'.1': 'rgb(12,20,12)',
-			    	'0.9': 'rgba(255,255,255,0)'
-			  	},
-			  	"0","0","0","300"
-			)}></Shape>
+			<Group>
+				<Shape d={this.getLinesD(true)} 
+					stroke="#4d4d4d"
+				></Shape>
+				<Shape d={this.getLinesD()} 
+					fill={new LinearGradient({
+				    	'.1': 'rgb(12,20,12)',
+				    	'0.8': 'rgba(255,255,255,0)'
+				  	},
+				  	"0","0","0","300"
+				)}></Shape>
+			</Group>
 		)
 	}
 
-	getLinesD = () => {
+	getLinesD = (stroke) => {
+		let path = new Path();
+
+		if( !stroke ){
+			path.moveTo(277,200+30).lineTo(43,200+30).lineTo(43,134+30)
+		} else {
+			path.moveTo(43,134+30)
+		}
+
 		return (
-			new Path().moveTo(277,200+30).lineTo(43,200+30).lineTo(43,134+30).lineTo(99,150+30).lineTo(152,87+30).lineTo(222,139+30).lineTo(277,99)
+			path.lineTo(99,150+30).lineTo(152,87+30).lineTo(222,139+30).lineTo(277,99)
 		)
 	}
 
