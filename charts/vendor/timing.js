@@ -3,19 +3,49 @@ import {
 	Animated
 } from 'react-native'
 
-
-export function elastic(){
-
+class Animation{
+	constructor(props) {
+		this.progress = 0;
+	}
 }
 
-export function stagger(){
+export class Spring extends Animation{
+	constructor() {
+	  this.type = "spring"
+	}
 
+	animate(callback){
+		callback && callback(progress);
+	}
 }
 
-export function linear(){
+export class Linear extends Animation{
+	constructor() {
+	  this.type = "linear"
+	}
 
+	animate(callback){
+		callback && callback(progress);
+	}
 }
 
-export function bounce(){
+export class Bounce extends Animation{
+	constructor() {
+	  this.type = "bounce"
+	}
 
+	animate(callback){
+		callback && callback(progress);
+	}
+}
+
+// multi animation method.
+export class Stagger extends Animation{
+	constructor() {
+	  this.type = "stagger"
+	}
+
+	animate(callback){
+		callback && callback(progress);
+	}
 }
