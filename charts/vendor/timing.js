@@ -5,17 +5,25 @@ import {
 
 class Animation{
 	constructor(props) {
-		this.progress = 0;
+		this.animation = new Animated.Value(0);
 	}
 }
 
 export class Spring extends Animation{
 	constructor() {
-	  this.type = "spring"
+	  this.type = " spring"
 	}
 
 	animate(callback){
-		callback && callback(progress);
+		//  props to add.
+		// duration extent
+		Animated.spring(this.aimation,{
+			toValue:1
+		})
+
+		this.animation.addListener(function(n){
+			callback && callback(n.value)
+		})
 	}
 }
 
@@ -41,11 +49,18 @@ export class Bounce extends Animation{
 
 // multi animation method.
 export class Stagger extends Animation{
-	constructor() {
+	constructor(animation,gapTime) {
 	  this.type = "stagger"
+
+	  this.gapTime = gapTime;
+	  this.childAnimation = animation;
 	}
 
 	animate(callback){
+		Animated.stagger(gapTime,[
+			
+		]);
+
 		callback && callback(progress);
 	}
 }
