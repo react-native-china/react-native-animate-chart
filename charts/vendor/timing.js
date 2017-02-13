@@ -11,10 +11,10 @@ class Animation{
 
 export class Spring extends Animation{
 	constructor() {
-	  this.type = " spring"
+	  this.type = "spring"
 	}
 
-	animate(callback){
+	play(callback){
 		//  props to add.
 		// duration extent
 		Animated.spring(this.aimation,{
@@ -27,13 +27,23 @@ export class Spring extends Animation{
 	}
 }
 
+/**
+ * simple contructor
+ * play(){}
+ * addListener(){}
+ */
+
 export class Linear extends Animation{
 	constructor() {
 	  this.type = "linear"
 	}
 
-	animate(callback){
+	play(callback){
 		callback && callback(progress);
+	}
+
+	addListener(){
+
 	}
 }
 
@@ -42,25 +52,32 @@ export class Bounce extends Animation{
 	  this.type = "bounce"
 	}
 
-	animate(callback){
+	play(callback){
 		callback && callback(progress);
+	}
+
+	addListener(){
+
 	}
 }
 
 // multi animation method.
+
 export class Stagger extends Animation{
 	constructor(animation,gapTime) {
 	  this.type = "stagger"
 
 	  this.gapTime = gapTime;
 	  this.childAnimation = animation;
+
+	  this.listeners = [];
 	}
 
-	animate(callback){
-		Animated.stagger(gapTime,[
-			
-		]);
+	play(){
+		Animated.stagger(gapTime,[]);
+	}
 
-		callback && callback(progress);
+	addListener(callback){
+		this.listeners.push(callback)
 	}
 }
