@@ -2,31 +2,40 @@ import React,{ Component } from 'react';
 import { ART } from 'react-native';
 const { Shape,Path } = ART;
 
-export class Rect extends Component{
+class Basic extends Component{
+	constructor( x=0, y=0 ){
+		this.x = x;
+		this.y = y;
+		this.size = size;
+	}
+}
+
+export class Rect extends Basic{
 	return (
-		<Shape></Shape>
+		<Shape { this.props.style }></Shape>
 	)
 }
 
-export class Circle extends Component{
+export class Circle extends Basic{
+
 	return(
-		<Shape></Shape>
+		<Shape d={}></Shape>
 	)
 }
 
-export class Diamond extends Component{
+export class Diamond extends Basic{
 	return(
 		<Shape></Shape>
 	)	
 }
 
-export class Triangle extends Component{
+export class Triangle extends Basic{
 	return(
 		<Shape></Shape>
 	)
 }
 
-export class Custom extends Component{
+export class Custom extends Basic{
 	return(
 		<Shape></Shape>
 	)
