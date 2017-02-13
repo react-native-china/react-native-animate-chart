@@ -7,7 +7,6 @@ export const default = {
 		stroke:
 		fill:
 	}
-	backgroundColor:,
 	title:{
 		color:,
 		size:
@@ -20,3 +19,11 @@ export const default = {
 		color:,
 		width:
 	}
+	backgroundColor:,
+	padding:{
+		left:,
+		top:,
+		bottom:,
+		right:
+	}
+}
