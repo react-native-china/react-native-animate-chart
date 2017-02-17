@@ -11,6 +11,7 @@ import GestureAware from './vendor/GestureAware';
 export default class Pie extends Component{
 	render(){
 		return(
+			<View></View>
 		)
 	}
 }
