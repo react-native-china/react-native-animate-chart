@@ -62,6 +62,29 @@ export default class Line extends Component{
 		}
 	}
 
+	componentDidMount(){
+		// need to be refactor with timing function.
+		let animationHub = [];
+
+		this.props.series.forEach(({data},index) => {
+			const animation = new Animated.Value(0);
+
+			animationHub.push(Animated.spring(animation,{toValue:1}));
+
+			this.setState({
+				[`progress${index}`]:0
+			})
+
+			animation.addListener((n) => {
+				this.setState({
+					[`progress${index}`]:n.value
+				})
+			})
+		})
+
+		Animated.stagger(30,animationHub).start()
+	}
+
 	render(){
 		return (
 			<GestureAware
@@ -71,6 +94,7 @@ export default class Line extends Component{
 				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getLines() }
+					{ this.getCoords() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
 					{ this.getCrossHair() }
@@ -99,14 +123,77 @@ export default class Line extends Component{
 	getLinesD = (stroke) => {
 		let path = new Path();
 
-		if( !stroke ){
-			path.moveTo(277,200+30).lineTo(43,200+30).lineTo(43,134+30)
-		} else {
-			path.moveTo(43,134+30)
-		}
+		const {
+			yRange,
+			padding:{
+				left,top,right,bottom
+			}
+		} = this;
+
+		const {
+			width,height,series
+		} = this.props 
+
+		series.forEach(({data},index) => {
+
+			const containerWidth = width-left-right;
+			const containerHeight = height-top-bottom;
+
+			const progress = this.state[`progress${index}`] || 0;
+
+			const xAxis = left + index*containerWidth/series.length
+			const yAxis = containerHeight - (data/yRange)*containerHeight*progress + top
+
+			
+			// const progress = this.state[`progress${series.length - index}`] || 0;
+			// const xAxis = left + (index*containerWidth/series.length)*progress
+			// const yAxis = containerHeight - (data/yRange)*containerHeight + top
+
+			if( index == 0 ){
+				path.moveTo(xAxis,yAxis);
+				return;
+			}
+
+			path.lineTo(xAxis,yAxis);
+
+			if( !stroke && index == series.length - 1 ){
+				path.lineTo( xAxis, height - bottom)
+					.lineTo( left, height - bottom)
+					.close();
+			}
+		})
+
+		return path;
+	}
+
+
+	getCoords(){
+		return (
+			<Shape 
+				d={ this.getCoordsD() } 
+				stroke="#D4D4D4" 
+				strokeWidth="2"
+				></Shape>
+		)
+	}
+
+	getCoordsD(){
+
+		const {
+			width,height,series
+		} = this.props;
+
+		const {
+			padding:{
+				left,top,right,bottom
+			}
+		} = this;
 
 		return (
-			path.lineTo(99,150+30).lineTo(152,87+30).lineTo(222,139+30).lineTo(277,99)
+			new Path()
+				.moveTo(left,top)
+				.lineTo(left,height - bottom)
+				.lineTo(width - right,height - bottom)
 		)
 	}
 

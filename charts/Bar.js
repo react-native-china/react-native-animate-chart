@@ -90,7 +90,7 @@ export default class Bar extends Component{
 			})
 		})
 
-		Animated.stagger(200,animationHub).start()
+		Animated.stagger(30,animationHub).start()
 	}
 
 	render(){
@@ -163,10 +163,11 @@ export default class Bar extends Component{
 
 		const areaHeight = (height-top-bottom)
 		
-		const barWidth = itemWidth*0.6;
 		const itemWidth = (width-left-right)/series.length;
+		const barWidth = itemWidth*0.6;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
+
 		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
 
 		return (

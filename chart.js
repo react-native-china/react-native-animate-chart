@@ -46,17 +46,15 @@ export default class RNAChart extends Component{
 	getChart = () => {
 		const chartMap = {
 			bar:Bar,
-			lne:Line,
+			line:Line,
 			pie:Pie,
 			doughnut:Doughnut,
 			histogram:Histogram,
 			radar:Radar
 		}
 
-		const Component = chartMap[this.props.type];
-
 		return (
-			<Line {...this.props}/>
+			React.createElement(chartMap[this.props.type]||Bar,{...this.props})
 		)
 	}
 }
