@@ -32,7 +32,6 @@ export default class RNAChart extends Component{
 	}
 
 	componentWillMount(){
-		console.log(this.getChart());
 	}
 
 	render(){

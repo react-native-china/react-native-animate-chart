@@ -21,12 +21,12 @@ export function getCirclePoint(
 	originX = 0, 
 	originY = 0, 
 	radius = 0, 
-	deg = 0
 ){
-
-	return {
-		x:radius*cos( deg ) + originX,
-		y:radius*sin( deg ) + originY
+	return function(deg = 0){
+		return {
+			x:radius*cos( deg ) + originX,
+			y:radius*sin( deg ) + originY
+		}
 	}
 }
 

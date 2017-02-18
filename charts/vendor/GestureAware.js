@@ -38,8 +38,6 @@ export default class GestureAware extends Component{
 	}
 
 	componentDidMount(){
-		console.log(this.props);
-
 		setTimeout(() => {
 			this.getLayout((x, y, w, h, pageX, pageY) => {
 				this.setState({
@@ -61,6 +59,8 @@ export default class GestureAware extends Component{
 				}
 			})
 		});
+
+		this.onStart();
 	}
 
 	_moveHandler = (e, gestureState) => {

@@ -6,7 +6,8 @@ import React, {
 import {
 	ART,
 	View,
-	Animated
+	Animated,
+	Easing
 } from 'react-native';
 
 import {

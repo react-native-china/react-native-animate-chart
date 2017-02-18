@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
 	ART,
 	View,
-	Animated
+	Animated,
+	Easing
 } from 'react-native';
 
 import { roundingRange } from "../implements";
