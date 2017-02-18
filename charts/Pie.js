@@ -56,9 +56,20 @@ export default class Pie extends Component{
 			left:20
 		}
 
+		const {
+			width,height
+		} = this.props;
+
+		const {
+			left,right,top,bottom
+		} = this.padding
+
+		this.x = left/2 + (width-right)/2;
+		this.y = top/2 + (height-bottom)/2;
+		this.r = Math.min((height-bottom-top)/2,(width-left-right)/2);
+
 		this.start = 0;
 	}
-
 
 
 	componentDidMount(){
@@ -84,8 +95,6 @@ export default class Pie extends Component{
 		return(
 			<GestureAware
 				onStart = { this.onStart }
-				onMove = { this.onMove }
-				onEnd = { this.onEnd }
 				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getPies() }
@@ -125,13 +134,12 @@ export default class Pie extends Component{
 			progress
 		} = this.state
 
+		const {
+			x,y,r
+		} = this
+
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
-
-		// Pie infos.
-		const x = left/2 + (width-right)/2;
-		const y = top/2 + (height-bottom)/2;
-		const r = 70;
 
 		const circle = getCirclePoint(x,y,r)
 
@@ -167,5 +175,20 @@ export default class Pie extends Component{
 				y={60}
 				>{this.props.subtitle}</Text>
 		)
+	}
+
+	onStart = ({x0,y0}) => {
+		const {
+			x,y,r
+		} = this;
+
+		if( 
+			Math.sqrt(
+				Math.pow(y-y0,2)+
+				Math.pow(x-x0,2)
+			) < r 
+		){
+			console.log('in');
+		}
 	}
 }

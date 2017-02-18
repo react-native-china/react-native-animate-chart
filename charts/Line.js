@@ -105,6 +105,14 @@ export default class Line extends Component{
 	}
 
 	getLines = () => {
+		const {
+			height
+		} = this.props;
+
+		const {
+			bottom
+		} = this.padding;
+
 		return (
 			<Group>
 				<Shape d={this.getLinesD(true)} 
@@ -113,9 +121,9 @@ export default class Line extends Component{
 				<Shape d={this.getLinesD()} 
 					fill={new LinearGradient({
 				    	'.1': 'rgb(12,20,12)',
-				    	'0.8': 'rgba(255,255,255,0)'
+				    	'0.5': 'rgba(255,255,255,0)'
 				  	},
-				  	"0","0","0","300"
+				  	"0","0","0",(height-bottom)*2
 				)}></Shape>
 			</Group>
 		)
@@ -140,15 +148,14 @@ export default class Line extends Component{
 			const containerWidth = width-left-right;
 			const containerHeight = height-top-bottom;
 
-			const progress = this.state[`progress${index}`] || 0;
-
-			const xAxis = left + index*containerWidth/series.length
-			const yAxis = containerHeight - (data/yRange)*containerHeight*progress + top
+			// const progress = this.state[`progress${index}`] || 0;
+			// const xAxis = left + index*containerWidth/series.length
+			// const yAxis = containerHeight - (data/yRange)*containerHeight*progress + top
 
 			
-			// const progress = this.state[`progress${series.length - index}`] || 0;
-			// const xAxis = left + (index*containerWidth/series.length)*progress
-			// const yAxis = containerHeight - (data/yRange)*containerHeight + top
+			const progress = this.state[`progress${series.length - index}`] || 0;
+			const xAxis = left + (index*containerWidth/series.length)*progress
+			const yAxis = containerHeight - (data/yRange)*containerHeight + top
 
 			if( index == 0 ){
 				path.moveTo(xAxis,yAxis);
