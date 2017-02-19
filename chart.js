@@ -15,7 +15,6 @@ const {
 	Line,
 	Pie,
 	Doughnut,
-	Histogram,
 	Radar,
 } = charts;
 
@@ -26,7 +25,6 @@ export default class RNAChart extends Component{
 		  	"bar",
 		  	"pie",
 		  	"doughnut",
-		  	"histogram",
 		  	"radar"
   		]),
 	}
@@ -48,7 +46,6 @@ export default class RNAChart extends Component{
 			line:Line,
 			pie:Pie,
 			doughnut:Doughnut,
-			histogram:Histogram,
 			radar:Radar
 		}
 

@@ -60,7 +60,11 @@ export default class GestureAware extends Component{
 			})
 		});
 
-		this.onStart();
+		this.onStart({
+			...gestureState,
+			moveX:gestureState.x0,
+			moveY:gestureState.y0
+		});
 	}
 
 	_moveHandler = (e, gestureState) => {
