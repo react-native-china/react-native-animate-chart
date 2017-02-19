@@ -74,8 +74,8 @@ export default class Doughnut extends Component{
 		this.y = top/2 + (height-bottom)/2
 
 
-		this.innerR = 50;
-		this.outerR = 70;
+		this.outerR = Math.min((width-left-right),(height-top-bottom))/2;
+		this.innerR = this.outerR - 20;
 	}
 
 	componentDidMount(){
