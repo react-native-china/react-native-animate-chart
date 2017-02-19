@@ -72,6 +72,10 @@ export default class Doughnut extends Component{
 		// Pie infos.
 		this.x = left/2 + (width-right)/2,
 		this.y = top/2 + (height-bottom)/2
+
+
+		this.innerR = 50;
+		this.outerR = 70;
 	}
 
 	componentDidMount(){
@@ -99,6 +103,7 @@ export default class Doughnut extends Component{
 		return (
 			<GestureAware
 				onStart = { this.onStart }
+				onMove = { this.onMove }
 				>
 				<Surface width={ width } height={ height } visible={true}>
 					{ this.getDoughnut() }
@@ -117,7 +122,7 @@ export default class Doughnut extends Component{
 		return this.props.series.map((data,index) => {
 			return (
 				<Shape 
-					d={ this.getDoughnutD(data.data) } 
+					d={ this.getDoughnutD(data.data,index) } 
 					key={index} 
 					stroke={ data.normalStroke }
 					fill={data.normalFill}
@@ -126,7 +131,7 @@ export default class Doughnut extends Component{
 		})
 	}
 
-	getDoughnutD(data){
+	getDoughnutD(data,index){
 		const {
 			width,
 			height
@@ -142,8 +147,13 @@ export default class Doughnut extends Component{
 			}
 		} = this;
 
-		const innerR = 50;
-		const outerR = 70;
+		let outerR = this.outerR;
+		let innerR = this.innerR;
+
+		if( index == this.state.active ){
+			outerR += 10;
+			innerR += 10;
+		}
 
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
@@ -186,5 +196,63 @@ export default class Doughnut extends Component{
 		this.start += deltaAngle;
 
 		return path;
+	}
+
+	onStart = (ev) => {
+		this.eventHandler(ev.x0,ev.y0);
+	}
+
+	onMove = (ev) => {
+		this.eventHandler(ev.moveX,ev.moveY);
+	}
+
+	eventHandler = (absX,absY) => {
+		const {
+			x,y,innerR,outerR
+		} = this;
+
+		let distance = Math.sqrt(
+			Math.pow(absX-x,2)+
+			Math.pow(absY-y,2)
+		);
+
+		console.log(distance);
+
+		if( distance > innerR && distance < outerR ){
+			let angle = Math.atan2(absY-y,absX-x);
+			
+			const {
+				series
+			} = this.props;
+
+			if( angle < 0 ){
+				angle += Math.PI*2;
+			}
+
+			angle = (angle+Math.PI/2)%(Math.PI*2)
+
+			let percentage = angle/(Math.PI*2);
+
+			let added = 0;
+			let index = 0 ;
+
+			for(;index < series.length ;index++ ){
+				const data = series[index].data;
+
+				added+=data;
+
+				if( percentage < added/this.sum ){
+					break;
+				}
+			}
+
+			this.setState({
+				active:index
+			})
+		} else {
+			this.setState({
+				active:-1
+			})
+		}
 	}
 }

@@ -31,6 +31,10 @@ export default class Pie extends Component{
 
 	  attachTitleHandlers.apply(this);
 	  enableCoords.apply(this);
+
+	  this.state = {
+	  	active:-1
+	  }
 	}
 
 	static propTypes = {
@@ -86,6 +90,7 @@ export default class Pie extends Component{
 		return(
 			<GestureAware
 				onStart = { this.onStart }
+				onMove = { this.onMove }
 				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getPies() }
@@ -102,26 +107,32 @@ export default class Pie extends Component{
 		return this.props.series.map((data,index) => {
 			return (
 				<Shape 
-					d = { this.getPiesD(data.data) } 
+					d = { this.getPiesD(data.data,index) } 
 					stroke = { data.normalStroke } 
 					key = { index }
-					fill = { data.normalFill }
+					fill = { this.state.active == index ? data.activeFill : data.normalFill }
 				></Shape>
 			)
 		})
 	}
 
-	getPiesD(data){
+	getPiesD(data,index){
 		const {
 			width,
 			height
 		} = this.props;
 
 		const {
-			x,y,r,padding:{
+			x,y,padding:{
 				top,bottom,right,left
 			}
 		} = this;
+
+		let r = this.r;
+
+		if( this.state.active == index ){
+			r += 10;
+		}
 
 		const {
 			progress
@@ -141,5 +152,63 @@ export default class Pie extends Component{
 		this.start += deltaAngle;
 
 		return path;
+	}
+
+	onStart = (ev) => {
+		this.eventHandler(ev.x0,ev.y0)
+	}
+
+	onMove = (ev) => {
+		this.eventHandler(ev.moveX,ev.moveY)
+	}
+
+	eventHandler = (absX,absY) => {
+		const {
+			x,y,r
+		} = this;
+
+		let distance = Math.sqrt(
+			Math.pow(absX-x,2)+
+			Math.pow(absY-y,2)
+		);
+
+		console.log(distance);
+
+		if( distance < r ){
+			let angle = Math.atan2(absY-y,absX-x);
+			
+			const {
+				series
+			} = this.props;
+
+			if( angle < 0 ){
+				angle += Math.PI*2;
+			}
+
+			angle = (angle+Math.PI/2)%(Math.PI*2)
+
+			let percentage = angle/(Math.PI*2);
+
+			let added = 0;
+			let index = 0 ;
+
+			for(;index < series.length ;index++ ){
+				const data = series[index].data;
+
+				added+=data;
+
+				if( percentage < added/this.sum ){
+					break;
+				}
+			}
+
+			this.setState({
+				active:index
+			})
+		} else {
+			this.setState({
+				active:-1
+			})
+		}
 	}
 }
