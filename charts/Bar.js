@@ -15,6 +15,9 @@ import {
 } from "../implements";
 
 import GestureAware from './vendor/GestureAware';
+import attachTitleHandlers from './subparts/titles'
+import enableCrossHair from './subparts/crosshair'
+import enableCoords from './coords/cartesian';
 
 const {
     Surface,
@@ -32,6 +35,10 @@ const {
 export default class Bar extends Component{
 	constructor(props) {
 	  super(props);
+
+	  attachTitleHandlers.apply(this);
+	  enableCrossHair.apply(this);
+	  enableCoords.apply(this);
 	
 	  this.state = {
 	  	highlight:-1,
@@ -48,27 +55,14 @@ export default class Bar extends Component{
 
 	componentWillMount(){
 		const { series } = this.props;
-		let seriesData = [...series];
-
-		seriesData.sort((a,b) => {
-			return a-b;
-		})
 
 		this.data = series.map(({data}) => {
 			return data;
 		})
 
-		this.yRange = roundingRange(this.data);
+		this.barPos = [];
 
-		this.padding = {
-			top:
-				// releated to font size of title and subtitle.
-				(this.props.title ? 50 : 0) + 
-				( this.props.subtitle ? 50 : 0) + 20,
-			right:20,
-			bottom:50,
-			left:20
-		}
+		this.yRange = roundingRange(this.data);
 	}
 
 	componentDidMount(){
@@ -112,6 +106,7 @@ export default class Bar extends Component{
 					{ this.getTitle() }
 					{ this.getSubtitle() }
 					{ this.getCrossHair() }
+					{ this.getTooltips() }
 				</Surface>
 			</GestureAware>
 		)
@@ -171,6 +166,11 @@ export default class Bar extends Component{
 
 		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
 
+		this.barPos.push({
+			xAxis,
+			yAxis
+		})
+
 		return (
 			new Path()
 				.moveTo(xAxis,height - bottom)
@@ -180,106 +180,8 @@ export default class Bar extends Component{
 		)
 	}
 
-	getCoords(){
-		return (
-			<Shape 
-				d={ this.getCoordsD() } 
-				stroke="#D4D4D4" 
-				strokeWidth="2"
-				></Shape>
-		)
-	}
 
-	getCoordsD(){
-
-		const {
-			width,height,series
-		} = this.props;
-
-		const {
-			padding:{
-				left,top,right,bottom
-			}
-		} = this;
-
-		return (
-			new Path()
-				.moveTo(left,top)
-				.lineTo(left,height - bottom)
-				.lineTo(width - right,height - bottom)
-		)
-	}
-
-	getTitle(){
-
-		return (
-			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#4D4D4D" 
-				alignment='center'
-				x={160}
-				y={30}
-				>{this.props.title}</Text>
-		)
-	}
-
-	getSubtitle(){
-		return (
-			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#9D9D9D" 
-				alignment='center'
-				x={160}
-				y={60}
-				>{this.props.subtitle}</Text>
-		)
-	}
-
-	getCrossHair = () => {
-		let {
-			crossHair:{
-				x,y
-			}
-		} = this.state
-
-		const {
-			top,left,right,bottom
-		} = this.padding
-
-		const {
-			height,width
-		} = this.props;
-
-		if( x > 0 && x < left ) x = left;
-		if( x > 0 && x > width - right ) x = width - right;
-
-		if( x > 0 && y < top ) y = top;
-		if( x > 0 && y > height - bottom ) y = height - bottom;
-		
-		const yPos = y > top ? y : top;
-
-		return (
-			<Shape d={
-				x > 0 && y > 0 ? 
-				(
-					new Path()
-						.moveTo(x,top)
-						.lineTo(x,height - bottom)
-						.moveTo(left,y)
-						.lineTo(width - right,y)
-				)
-				: ""
-			} stroke="#4D4D4D" strokeWidth="0.2"></Shape>
-		)
-	}
-
-	onStart = (ev) => {
-		if( !this.props.disableCorssHair ) this.setCrossHair(ev);
-	}
-
-	onMove = (ev) => {
-		if( !this.props.disableCorssHair ) this.setCrossHair(ev);		
-	}
-
-	setCrossHair = (ev) => {
+	setCrossHair(ev){
 
 		this.setState({
 			crossHair:{
@@ -308,6 +210,37 @@ export default class Bar extends Component{
 		}
 	}
 
+	getTooltips(){
+		const {
+			highlight
+		} = this.state;
+
+		if( highlight < 0 ){
+			return <Shape/>
+		}
+
+		const { xAxis, yAxis } = this.barPos[highlight];
+
+		return (
+			<Group>
+				<Shape></Shape>
+				<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
+					fill = "#4D4D4D" 
+					alignment='center'
+					x={xAxis}
+					y={yAxis}
+					>Number</Text>
+			</Group>
+		)
+	}
+
+	onStart = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);
+	}
+
+	onMove = (ev) => {
+		if( !this.props.disableCorssHair ) this.setCrossHair(ev);		
+	}
 	onEnd = () => {
 		if( this.props.disableCorssHair ) return;
 

@@ -10,8 +10,12 @@ import {
 	Easing
 } from 'react-native';
 
-import { getCirclePoint } from "../implements";
+import { getCircle } from "../implements";
 import GestureAware from './vendor/GestureAware';
+
+
+import attachTitleHandlers from './subparts/titles'
+import enableCoords from './coords/circular';
 
 const {
     Surface,
@@ -30,38 +34,49 @@ export default class Doughnut extends Component{
 
 	constructor(props) {
 	  super(props);
-	
+
+	  attachTitleHandlers.apply(this);
+	  enableCoords.apply(this);
+
 	  this.state = {
-	  	crossHair:{}
-	  };
+	  	progress:0
+	  }
+	}
+
+	static propTypes = {
+		series: PropTypes.array,
+		subtitle:PropTypes.string,
+		title:PropTypes.string,
+		tootip:PropTypes.object
 	}
 
 	componentWillMount(){
-		const { series } = this.props;
-		let seriesData = [...series];
+		const {
+			left,bottom,right,top
+		} = this.padding;
 
-		seriesData.sort((a,b) => {
-			return a-b;
-		})
+		const {
+			width,height
+		} = this.props;
 
-		this.data = series.map(({data}) => {
-			return data;
-		})
-
-		this.sum = Math.sum.apply(null,this.data)
-
-		this.padding = {
-			top:
-				(this.props.title ? 50 : 0) + 
-				( this.props.subtitle ? 50 : 0) + 20,
-			right:20,
-			bottom:50,
-			left:20
-		}
+		this.sum = Math.sum.apply(
+			null,
+			this.props.series.map(({data}) => {
+					return data;
+				}
+			)
+		)
 
 		this.start = 0;
-	}
 
+		// Pie infos.
+		this.x = left/2 + (width-right)/2,
+		this.y = top/2 + (height-bottom)/2
+
+
+		this.innerR = 50;
+		this.outerR = 70;
+	}
 
 	componentDidMount(){
 		// need to be refactor with timing function.
@@ -83,13 +98,14 @@ export default class Doughnut extends Component{
 	}
 
 	render(){
+		const { width,height } = this.props;
+
 		return (
 			<GestureAware
 				onStart = { this.onStart }
 				onMove = { this.onMove }
-				onEnd = { this.onEnd }
 				>
-				<Surface width={this.props.width} height={this.props.height} visible={true}>
+				<Surface width={ width } height={ height } visible={true}>
 					{ this.getDoughnut() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
@@ -100,12 +116,13 @@ export default class Doughnut extends Component{
 
 	getDoughnut(){
 
+		// reset the progress state angle.
 		this.start = 0;
 
 		return this.props.series.map((data,index) => {
 			return (
 				<Shape 
-					d={ this.getDoughnutD(data.data) } 
+					d={ this.getDoughnutD(data.data,index) } 
 					key={index} 
 					stroke={ data.normalStroke }
 					fill={data.normalFill}
@@ -114,51 +131,64 @@ export default class Doughnut extends Component{
 		})
 	}
 
-	getDoughnutD(data){
+	getDoughnutD(data,index){
 		const {
 			width,
 			height
 		} = this.props;
 
 		const {
-			top,bottom,right,left
-		} = this.padding
-
-		const {
 			progress
 		} = this.state;
+
+		const {
+			x,y,padding:{
+				top,bottom,right,left
+			}
+		} = this;
+
+		let outerR = this.outerR;
+		let innerR = this.innerR;
+
+		if( index == this.state.active ){
+			outerR += 10;
+			innerR += 10;
+		}
 
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
 
-		// Pie infos.
-		const x = left/2 + (width-right)/2;
-		const y = top/2 + (height-bottom)/2;
-		const innerR = 50;
-		const outerR = 70;
-
-		const outerCircle = getCirclePoint(x,y,outerR);
-		const innerCircle = getCirclePoint(x,y,innerR);
+		const outerCircle = getCircle(x,y,outerR);
+		const innerCircle = getCircle(x,y,innerR);
 
 		const startAngle = start - Math.PI/2;
 		const endAngle = start+deltaAngle - Math.PI/2;
 
+		const outerStartPoint = outerCircle(startAngle);
+		const innerStartPoint = innerCircle(startAngle);
+
+		const outerEndPoint = outerCircle(endAngle);
+		const innerEndPoint = innerCircle(endAngle);
+
 		let path = new Path().moveTo(innerCircle(startAngle).x,innerCircle(startAngle).y)
 
-
+		// draw major part
 		if( endAngle - startAngle > Math.PI ){
 			const middleAngle = startAngle + Math.PI;
 
-			path.arcTo(innerCircle(middleAngle).x,innerCircle(middleAngle).y,innerR)
-				.arcTo(innerCircle(endAngle).x,innerCircle(endAngle).y,innerR)
-				.lineTo(outerCircle(endAngle).x,outerCircle(endAngle).y)
-				.arcTo(outerCircle(middleAngle).x,outerCircle(middleAngle).y,outerR,outerR,false,true)
-				.arcTo(outerCircle(startAngle).x,outerCircle(startAngle).y,outerR,outerR,false,true)
+			const outerMiddlePoint = outerCircle(middleAngle);
+			const innerMiddlePoint = innerCircle(middleAngle);
+
+			path.arcTo(innerMiddlePoint.x,innerMiddlePoint.y,innerR,innerR)
+				.arcTo(innerEndPoint.x,innerEndPoint.y,innerR)
+				.lineTo(outerEndPoint.x,outerEndPoint.y)
+				.arcTo(outerMiddlePoint.x,outerMiddlePoint.y,outerR,outerR,false,true)
+				.arcTo(outerStartPoint.x,outerStartPoint.y,outerR,outerR,false,true)
 
 		} else {
-			path.arcTo(innerCircle(endAngle).x,innerCircle(endAngle).y,innerR)
-				.lineTo(outerCircle(endAngle).x,outerCircle(endAngle).y)
-				.arcTo(outerCircle(startAngle).x,outerCircle(startAngle).y,outerR,outerR,false,true)
+			path.arcTo(innerEndPoint.x,innerEndPoint.y,innerR)
+				.lineTo(outerEndPoint.x,outerEndPoint.y)
+				.arcTo(outerStartPoint.x,outerStartPoint.y,outerR,outerR,false,true)
 		}
 
 		path.close()						
@@ -168,26 +198,61 @@ export default class Doughnut extends Component{
 		return path;
 	}
 
-	getTitle(){
-
-		return (
-			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#4D4D4D" 
-				alignment='center'
-				x={160}
-				y={30}
-				>{this.props.title}</Text>
-		)
+	onStart = (ev) => {
+		this.eventHandler(ev.x0,ev.y0);
 	}
 
-	getSubtitle(){
-		return (
-			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#9D9D9D" 
-				alignment='center'
-				x={160}
-				y={60}
-				>{this.props.subtitle}</Text>
-		)
+	onMove = (ev) => {
+		this.eventHandler(ev.moveX,ev.moveY);
+	}
+
+	eventHandler = (absX,absY) => {
+		const {
+			x,y,innerR,outerR
+		} = this;
+
+		let distance = Math.sqrt(
+			Math.pow(absX-x,2)+
+			Math.pow(absY-y,2)
+		);
+
+		console.log(distance);
+
+		if( distance > innerR && distance < outerR ){
+			let angle = Math.atan2(absY-y,absX-x);
+			
+			const {
+				series
+			} = this.props;
+
+			if( angle < 0 ){
+				angle += Math.PI*2;
+			}
+
+			angle = (angle+Math.PI/2)%(Math.PI*2)
+
+			let percentage = angle/(Math.PI*2);
+
+			let added = 0;
+			let index = 0 ;
+
+			for(;index < series.length ;index++ ){
+				const data = series[index].data;
+
+				added+=data;
+
+				if( percentage < added/this.sum ){
+					break;
+				}
+			}
+
+			this.setState({
+				active:index
+			})
+		} else {
+			this.setState({
+				active:-1
+			})
+		}
 	}
 }

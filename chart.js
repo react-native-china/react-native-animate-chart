@@ -29,9 +29,6 @@ export default class RNAChart extends Component{
   		]),
 	}
 
-	componentWillMount(){
-	}
-
 	render(){
 		return (
 			<View style={{backgroundColor:'#F8F8F8'}}>

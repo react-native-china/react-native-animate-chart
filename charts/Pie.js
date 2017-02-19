@@ -19,47 +19,53 @@ const {
     Transform
 } = ART;
 
-import { getCirclePoint } from "../implements";
+import { getCircle } from "../implements";
 import GestureAware from './vendor/GestureAware';
+import attachTitleHandlers from './subparts/titles'
+import enableCoords from './coords/circular';
 
 export default class Pie extends Component{
 
 	constructor(props) {
 	  super(props);
-	
+
+	  attachTitleHandlers.apply(this);
+	  enableCoords.apply(this);
+
 	  this.state = {
-	  	de:0,
-	  	crossHair:{}
-	  };
+	  	active:-1
+	  }
+	}
+
+	static propTypes = {
+		series: PropTypes.array,
+		subtitle:PropTypes.string,
+		title:PropTypes.string,
+		tootip:PropTypes.object
 	}
 
 	componentWillMount(){
-		const { series } = this.props;
-		let seriesData = [...series];
+		const {
+			left,right,top,bottom
+		} = this.padding;
 
-		seriesData.sort((a,b) => {
-			return a-b;
-		})
+		const {
+			width,height
+		} = this.props;
 
-		this.data = series.map(({data}) => {
-			return data;
-		})
+		this.sum = Math.sum.apply(
+			null,
+			this.props.series.map(({data}) => {
+				return data;
+			})
+		)
 
-		this.sum = Math.sum.apply(null,this.data)
-
-		this.padding = {
-			top:
-				(this.props.title ? 50 : 0) + 
-				( this.props.subtitle ? 50 : 0) + 20,
-			right:20,
-			bottom:50,
-			left:20
-		}
+		this.x = left/2 + (width-right)/2;
+		this.y = top/2 + (height-bottom)/2;
+		this.r = Math.min((height-bottom-top)/2,(width-left-right)/2);
 
 		this.start = 0;
 	}
-
-
 
 	componentDidMount(){
 		// need to be refactor with timing function.
@@ -85,7 +91,6 @@ export default class Pie extends Component{
 			<GestureAware
 				onStart = { this.onStart }
 				onMove = { this.onMove }
-				onEnd = { this.onEnd }
 				>
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getPies() }
@@ -102,38 +107,41 @@ export default class Pie extends Component{
 		return this.props.series.map((data,index) => {
 			return (
 				<Shape 
-					d = { this.getPiesD(data.data) } 
+					d = { this.getPiesD(data.data,index) } 
 					stroke = { data.normalStroke } 
 					key = { index }
-					fill = { data.normalFill }
+					fill = { this.state.active == index ? data.activeFill : data.normalFill }
 				></Shape>
 			)
 		})
 	}
 
-	getPiesD(data){
+	getPiesD(data,index){
 		const {
 			width,
 			height
 		} = this.props;
 
 		const {
-			top,bottom,right,left
-		} = this.padding
+			x,y,padding:{
+				top,bottom,right,left
+			}
+		} = this;
+
+		let r = this.r;
+
+		if( this.state.active == index ){
+			r += 10;
+		}
 
 		const {
 			progress
-		} = this.state
+		} = this.state || {}
 
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
 
-		// Pie infos.
-		const x = left/2 + (width-right)/2;
-		const y = top/2 + (height-bottom)/2;
-		const r = 70;
-
-		const circle = getCirclePoint(x,y,r)
+		const circle = getCircle(x,y,r)
 
 		let path = new Path()
 						.moveTo(x,y)
@@ -146,26 +154,61 @@ export default class Pie extends Component{
 		return path;
 	}
 
-	getTitle(){
-
-		return (
-			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#4D4D4D" 
-				alignment='center'
-				x={160}
-				y={30}
-				>{this.props.title}</Text>
-		)
+	onStart = (ev) => {
+		this.eventHandler(ev.x0,ev.y0)
 	}
 
-	getSubtitle(){
-		return (
-			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#9D9D9D" 
-				alignment='center'
-				x={160}
-				y={60}
-				>{this.props.subtitle}</Text>
-		)
+	onMove = (ev) => {
+		this.eventHandler(ev.moveX,ev.moveY)
+	}
+
+	eventHandler = (absX,absY) => {
+		const {
+			x,y,r
+		} = this;
+
+		let distance = Math.sqrt(
+			Math.pow(absX-x,2)+
+			Math.pow(absY-y,2)
+		);
+
+		console.log(distance);
+
+		if( distance < r ){
+			let angle = Math.atan2(absY-y,absX-x);
+			
+			const {
+				series
+			} = this.props;
+
+			if( angle < 0 ){
+				angle += Math.PI*2;
+			}
+
+			angle = (angle+Math.PI/2)%(Math.PI*2)
+
+			let percentage = angle/(Math.PI*2);
+
+			let added = 0;
+			let index = 0 ;
+
+			for(;index < series.length ;index++ ){
+				const data = series[index].data;
+
+				added+=data;
+
+				if( percentage < added/this.sum ){
+					break;
+				}
+			}
+
+			this.setState({
+				active:index
+			})
+		} else {
+			this.setState({
+				active:-1
+			})
+		}
 	}
 }

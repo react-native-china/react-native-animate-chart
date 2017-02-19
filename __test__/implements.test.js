@@ -1,6 +1,6 @@
 const { 
 	roundingRange,
-	getCirclePoint
+	getCircle
 } = require('../implements');
 
 test('range calculate', () => {
@@ -8,7 +8,7 @@ test('range calculate', () => {
 });
 
 test('circle calculate', () => {
-	const circle = getCirclePoint(100,100,50);
+	const circle = getCircle(100,100,50);
 
 	expect(circle(0)).toEqual({x:150,y:100});
 	expect(circle(Math.PI)).toEqual({x:50,y:100})
