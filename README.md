@@ -6,6 +6,7 @@ An chart library with animation based on ART module.
 [![Build Status](https://travis-ci.org/react-native-china/react-native-animate-chart.svg?branch=master)](https://travis-ci.org/react-native-china/react-native-animate-chart)
 
 [![bar.gif](https://s25.postimg.org/66o66eksf/bar.gif)](https://postimg.org/image/d9w1m0q7v/)
+[![line.gif](https://s25.postimg.org/ut6ama30f/line.gif)](https://postimg.org/image/gzhxx8aez/)
 
 TODOS:
 - [ ] Pie
