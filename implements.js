@@ -14,10 +14,9 @@ const { sin, cos, PI, sqrt, pow, max, min, round, random, sum, avg } = Math;
  * Get a dot coordinate on the given circle
  * All of these params are necessary for generating.
  * @param deg should in radian( 2*PI ) format.NOT angle( 360° ).
- *
  **/
 
-export function getCirclePoint( 
+export function getCircle( 
 	originX = 0, 
 	originY = 0, 
 	radius = 0, 

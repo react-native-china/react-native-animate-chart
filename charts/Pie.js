@@ -19,50 +19,42 @@ const {
     Transform
 } = ART;
 
-import { getCirclePoint } from "../implements";
+import { getCircle } from "../implements";
 import GestureAware from './vendor/GestureAware';
+import attachTitleHandlers from './subparts/titles'
+import enableCoords from './coords/circular';
 
 export default class Pie extends Component{
 
 	constructor(props) {
 	  super(props);
-	
-	  this.state = {
-	  	de:0,
-	  	crossHair:{}
-	  };
+
+	  attachTitleHandlers.apply(this);
+	  enableCoords.apply(this);
+	}
+
+	static propTypes = {
+		series: PropTypes.array,
+		subtitle:PropTypes.string,
+		title:PropTypes.string,
+		tootip:PropTypes.object
 	}
 
 	componentWillMount(){
-		const { series } = this.props;
-		let seriesData = [...series];
-
-		seriesData.sort((a,b) => {
-			return a-b;
-		})
-
-		this.data = series.map(({data}) => {
-			return data;
-		})
-
-		this.sum = Math.sum.apply(null,this.data)
-
-		this.padding = {
-			top:
-				(this.props.title ? 50 : 0) + 
-				( this.props.subtitle ? 50 : 0) + 20,
-			right:20,
-			bottom:50,
-			left:20
-		}
+		const {
+			left,right,top,bottom
+		} = this.padding;
 
 		const {
 			width,height
 		} = this.props;
 
-		const {
-			left,right,top,bottom
-		} = this.padding
+		this.sum = Math.sum.apply(
+			null,
+			this.props.series.map(({data}) => {
+				return data;
+			})
+		)
 
 		this.x = left/2 + (width-right)/2;
 		this.y = top/2 + (height-bottom)/2;
@@ -70,7 +62,6 @@ export default class Pie extends Component{
 
 		this.start = 0;
 	}
-
 
 	componentDidMount(){
 		// need to be refactor with timing function.
@@ -127,21 +118,19 @@ export default class Pie extends Component{
 		} = this.props;
 
 		const {
-			top,bottom,right,left
-		} = this.padding
+			x,y,r,padding:{
+				top,bottom,right,left
+			}
+		} = this;
 
 		const {
 			progress
-		} = this.state
-
-		const {
-			x,y,r
-		} = this
+		} = this.state || {}
 
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
 
-		const circle = getCirclePoint(x,y,r)
+		const circle = getCircle(x,y,r)
 
 		let path = new Path()
 						.moveTo(x,y)
@@ -152,43 +141,5 @@ export default class Pie extends Component{
 		this.start += deltaAngle;
 
 		return path;
-	}
-
-	getTitle(){
-
-		return (
-			<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#4D4D4D" 
-				alignment='center'
-				x={160}
-				y={30}
-				>{this.props.title}</Text>
-		)
-	}
-
-	getSubtitle(){
-		return (
-			<Text font={`14px "Helvetica Neue", "Helvetica", Arial`} 
-				fill = "#9D9D9D" 
-				alignment='center'
-				x={160}
-				y={60}
-				>{this.props.subtitle}</Text>
-		)
-	}
-
-	onStart = ({x0,y0}) => {
-		const {
-			x,y,r
-		} = this;
-
-		if( 
-			Math.sqrt(
-				Math.pow(y-y0,2)+
-				Math.pow(x-x0,2)
-			) < r 
-		){
-			console.log('in');
-		}
 	}
 }
