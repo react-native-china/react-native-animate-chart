@@ -21,7 +21,7 @@
     "charts"
   ],
   "author": "oboo chin <cheng.12@live.cn> (github.com/obooman)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/react-native-china/react-native-animate-chart/issues"
   },
