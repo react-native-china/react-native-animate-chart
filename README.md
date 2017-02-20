@@ -12,8 +12,16 @@ An chart library with animation based on ART module.
 #### Get Started
 Before starting using the animate chart library,you have to add the ART module to your project  if you are deleloping iOS platform app.
 
- 1. drag `node_modules/react-native/Libraries/ART/ART.xcodeproj` to you project's `libraries` foulder
- 2. Link the `ART.a` module
+ 1. Edit your root `.babelrc` file and add the `es2015` preset.
+
+	```
+	{
+		preset:["es2015","react-native"]
+	}
+ 	```
+
+ 2. drag `node_modules/react-native/Libraries/ART/ART.xcodeproj` to you project's `libraries` foulder
+ 3. Link the `ART.a` module
 
 Then save the following code named `Demo.js` as an component.
 
