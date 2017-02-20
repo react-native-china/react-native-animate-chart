@@ -14,11 +14,11 @@ Before starting using the animate chart library,you have to add the ART module t
 
  1. Edit your root `.babelrc` file and add the `es2015` preset.
 
-	```
-	{
-		preset:["es2015","react-native"]
-	}
- 	```
+```
+{
+	preset:["es2015","react-native"]
+}
+```
 
  2. drag `node_modules/react-native/Libraries/ART/ART.xcodeproj` to you project's `libraries` foulder
  3. Link the `ART.a` module
