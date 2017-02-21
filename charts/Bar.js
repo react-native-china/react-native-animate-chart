@@ -18,6 +18,7 @@ import GestureAware from './vendor/GestureAware';
 import attachTitleHandlers from './subparts/titles'
 import enableCrossHair from './subparts/crosshair'
 import enableCoords from './coords/cartesian';
+import getTooltipBac from './subparts/tooltip'
 
 const {
     Surface,
@@ -39,6 +40,7 @@ export default class Bar extends Component{
 	  attachTitleHandlers.apply(this);
 	  enableCrossHair.apply(this);
 	  enableCoords.apply(this);
+	  getTooltipBac.apply(this);
 	
 	  this.state = {
 	  	highlight:-1,
@@ -246,33 +248,14 @@ export default class Bar extends Component{
 			xMiddle = this.props.width - this.padding.right - width/2
 		}
 
-		const radius = 0;
-
-		return (
-			<Group>
-				<Shape d={
-					new Path()
-						.moveTo(xMiddle - width/2 + radius,yMiddle - height/2)
-						.lineTo(xMiddle + width/2 - radius,yMiddle - height/2)
-						.arcTo(xMiddle + width/2,yMiddle - height/2 + radius,radius,radius)
-						.lineTo(xMiddle + width/2,yMiddle + height/2 - radius)
-						.arcTo(xMiddle + width/2 - radius,yMiddle + height/2,radius,radius)
-						.lineTo(xMiddle - width/2 + 2,yMiddle + height/2)
-						.arcTo(xMiddle - width/2,yMiddle + height/2 - radius,radius,radius)
-						.lineTo(xMiddle - width/2,yMiddle - height/2 + radius)
-						.arcTo(xMiddle - width/2 + radius,yMiddle - height/2,radius,radius)
-						.close()
-
-				} fill="#029df9"/>
-
-				<Text font={`8px "Courier-Bold", "Helvetica Neue", "Helvetica", Arial`} 
-					fill = "white" 
-					alignment='center'
-					x={ xMiddle }
-					y={ yAxis-21 }
-					>{ tooltipText }</Text>
-			</Group>
-		)
+		return this.getTooltipBac({
+			tooltipText,
+			x:xMiddle - width/2,
+			y:yMiddle - height/2,
+			width,
+			height,
+			r:12
+		})
 	}
 
 	onStart = (ev) => {
