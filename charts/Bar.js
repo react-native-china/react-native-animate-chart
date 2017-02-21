@@ -221,7 +221,7 @@ export default class Bar extends Component{
 			highlight
 		} = this.state;
 
-		if( highlight < 0 ){
+		if( highlight < 0 || highlight > this.props.series.length-1){
 			return <Shape/>
 		}
 
@@ -229,15 +229,48 @@ export default class Bar extends Component{
 			xAxis,yAxis
 		} = this.barPos[highlight]
 
+		const tooltipText = this.props.tootip.text(highlight,this.props.series[highlight].data);
+		const approximateTextLength = 8 * tooltipText.length;
+
+		const width = approximateTextLength + 10;
+		const height = 8 + 10;
+
+		let xMiddle = xAxis+(this.itemWidth*0.3);
+		const yMiddle = yAxis-20+4;
+
+		if( xMiddle - width/2 < this.padding.left ){
+			xMiddle = width/2 + this.padding.left;
+		}
+
+		if( xMiddle + width/2 > this.props.width - this.padding.right ){
+			xMiddle = this.props.width - this.padding.right - width/2
+		}
+
+		const radius = 0;
+
 		return (
 			<Group>
-				<Shape></Shape>
-				<Text font={`8px "Helvetica Neue", "Helvetica", Arial`} 
-					fill = "#4D4D4D" 
+				<Shape d={
+					new Path()
+						.moveTo(xMiddle - width/2 + radius,yMiddle - height/2)
+						.lineTo(xMiddle + width/2 - radius,yMiddle - height/2)
+						.arcTo(xMiddle + width/2,yMiddle - height/2 + radius,radius,radius)
+						.lineTo(xMiddle + width/2,yMiddle + height/2 - radius)
+						.arcTo(xMiddle + width/2 - radius,yMiddle + height/2,radius,radius)
+						.lineTo(xMiddle - width/2 + 2,yMiddle + height/2)
+						.arcTo(xMiddle - width/2,yMiddle + height/2 - radius,radius,radius)
+						.lineTo(xMiddle - width/2,yMiddle - height/2 + radius)
+						.arcTo(xMiddle - width/2 + radius,yMiddle - height/2,radius,radius)
+						.close()
+
+				} fill="#029df9"/>
+
+				<Text font={`8px "Courier-Bold", "Helvetica Neue", "Helvetica", Arial`} 
+					fill = "white" 
 					alignment='center'
-					x={xAxis+(this.itemWidth*0.3)}
-					y={yAxis-20}
-					>{ this.props.tootip.text(highlight,this.props.series[highlight].data) }</Text>
+					x={ xMiddle }
+					y={ yAxis-21 }
+					>{ tooltipText }</Text>
 			</Group>
 		)
 	}
