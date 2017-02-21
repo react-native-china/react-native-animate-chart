@@ -55,6 +55,14 @@ export default class Bar extends Component{
 
 	componentWillMount(){
 		const { series } = this.props;
+		
+		const {
+			top,left,right,bottom
+		} = this.padding;
+
+		const {
+			height,width
+		} = this.props;
 
 		this.data = series.map(({data}) => {
 			return data;
@@ -63,6 +71,9 @@ export default class Bar extends Component{
 		this.barPos = [];
 
 		this.yRange = roundingRange(this.data);
+		this.areaHeight = height-top-bottom
+
+		this.itemWidth = (width-left-right)/series.length
 	}
 
 	componentDidMount(){
@@ -152,24 +163,20 @@ export default class Bar extends Component{
 		const {
 			yRange,padding:{
 				left,top,right,bottom
-			}
+			},areaHeight,itemWidth,
 		} = this;
 
 		const progress = this.state[`progress${index}`] || 0;
-
-		const areaHeight = (height-top-bottom)
 		
-		const itemWidth = (width-left-right)/series.length;
 		const barWidth = itemWidth*0.6;
 
 		const xAxis = index*itemWidth+(itemWidth-barWidth/2);
-
 		const yAxis = height - progress*(data.data/yRange * areaHeight) - bottom
 
-		this.barPos.push({
+		this.barPos[index] = {
 			xAxis,
-			yAxis
-		})
+			yAxis:height - (data.data/yRange * areaHeight) - bottom
+		}
 
 		return (
 			new Path()
@@ -179,7 +186,6 @@ export default class Bar extends Component{
 				.lineTo(xAxis+barWidth,height - bottom)
 		)
 	}
-
 
 	setCrossHair(ev){
 
@@ -219,17 +225,19 @@ export default class Bar extends Component{
 			return <Shape/>
 		}
 
-		const { xAxis, yAxis } = this.barPos[highlight];
+		const {
+			xAxis,yAxis
+		} = this.barPos[highlight]
 
 		return (
 			<Group>
 				<Shape></Shape>
-				<Text font={`16px "Helvetica Neue", "Helvetica", Arial`} 
+				<Text font={`8px "Helvetica Neue", "Helvetica", Arial`} 
 					fill = "#4D4D4D" 
 					alignment='center'
-					x={xAxis}
-					y={yAxis}
-					>Number</Text>
+					x={xAxis+(this.itemWidth*0.3)}
+					y={yAxis-20}
+					>{ this.props.tootip.text(highlight,this.props.series[highlight].data) }</Text>
 			</Group>
 		)
 	}

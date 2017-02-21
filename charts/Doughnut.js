@@ -124,8 +124,8 @@ export default class Doughnut extends Component{
 				<Shape 
 					d={ this.getDoughnutD(data.data,index) } 
 					key={index} 
-					stroke={ data.normalStroke }
-					fill={data.normalFill}
+					stroke={ this.state.active == index ? data.activeStroke : data.normalStroke }
+					fill={ this.state.active == index ? data.activeFill : data.normalFill }
 				></Shape>
 			)
 		})

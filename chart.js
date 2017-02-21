@@ -46,8 +46,28 @@ export default class RNAChart extends Component{
 			radar:Radar
 		}
 
+		let properties = {
+			...this.getDefaultProperties(),
+			...this.props
+		};
+
 		return (
-			React.createElement(chartMap[this.props.type]||Bar,{...this.props})
+			React.createElement(chartMap[this.props.type]||Bar,{...properties})
 		)
+	}
+
+	getDefaultProperties = () => {
+		return {
+			xAxis:{},
+			yAxis:{},
+			colors:{},
+			data:{},
+			legend:{},
+			series:{},
+			title:"",
+			subtitle:"",
+			tooltip:{},
+			animation:{},
+		}
 	}
 }

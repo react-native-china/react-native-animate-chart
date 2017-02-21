@@ -121,4 +121,27 @@ export default class Main extends Component{
 			}
 		]
 	}
+
+	getLegend(){
+		retrun {
+			title:{
+				color:,
+				fontSize:,
+				fontWeight:,
+			},
+			subtitle:{
+				color:,
+				fontSize:,
+				fontWeight:,
+			},
+			coords:{
+				width:,
+				color:
+			}
+			crosshair:{
+				color:'',
+				width:
+			}
+		}
+	}
 }

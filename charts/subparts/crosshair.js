@@ -34,11 +34,23 @@ function getCrossHair(){
 		<Shape d={
 			x > 0 && y > 0 ? 
 			(
-				new Path()
-					.moveTo(x,top)
-					.lineTo(x,height - bottom)
-					.moveTo(left,y)
-					.lineTo(width - right,y)
+				(() => {
+					var path = new Path();
+
+					if( this.props.xAxis.crosshair ){
+						path
+						.moveTo(x,top)
+						.lineTo(x,height - bottom)
+					}
+
+					if( this.props.yAxis.crosshair ){
+						path
+						.moveTo(left,y)
+						.lineTo(width - right,y)
+					}
+
+					return path;
+				})()
 			)
 			: ""
 		} stroke="#4D4D4D" strokeWidth="0.2"></Shape>
