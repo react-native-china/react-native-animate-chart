@@ -37,6 +37,14 @@ export default class Demo extends Components{
 				height="300"
 				title="Awesome React Native"
 				subtitle="library for charting things"
+				tootip = {{
+					text:function(index,data){
+						return `The ${index} data is ${data}`
+					}
+				}}
+				xAxis = {{
+					crosshair:true
+				}}
 			/>
 		)
 	}
