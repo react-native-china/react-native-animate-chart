@@ -22,18 +22,25 @@ const {
     Transform
 } = ART;
 
+import {
+	attachTitleHandlers,
+	enableCrosshair,
+	enableCoords
+} from './subparts'
 
-import attachTitleHandlers from './subparts/titles'
-import enableCrossHair from './subparts/crosshair'
-import enableCoords from './coords/cartesian';
+console.log( {
+	attachTitleHandlers,
+	enableCrosshair,
+	enableCoords
+}  )
 
 export default class Line extends Component{
 	constructor(props) {
 	  super(props);
 
 	  attachTitleHandlers.apply(this);
-	  enableCrossHair.apply(this);
-	  enableCoords.apply(this);
+	  enableCrosshair.apply(this);
+	  enableCoords('cartesian').apply(this);
 	
 	  this.state = {
 	  	highlight:-1,

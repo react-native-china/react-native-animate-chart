@@ -15,10 +15,12 @@ import {
 } from "../implements";
 
 import GestureAware from './vendor/GestureAware';
-import attachTitleHandlers from './subparts/titles'
-import enableCrossHair from './subparts/crosshair'
-import enableCoords from './coords/cartesian';
-import getTooltipBac from './subparts/tooltip'
+import {
+	attachTitleHandlers,
+	enableCrosshair,
+	enableCoords,
+	getTooltipBac
+} from './subparts';
 
 const {
     Surface,
@@ -37,9 +39,9 @@ export default class Bar extends Component{
 	constructor(props) {
 	  super(props);
 
+	  enableCoords('cartesian').apply(this);
 	  attachTitleHandlers.apply(this);
-	  enableCrossHair.apply(this);
-	  enableCoords.apply(this);
+	  enableCrosshair.apply(this);
 	  getTooltipBac.apply(this);
 	
 	  this.state = {

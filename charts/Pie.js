@@ -21,8 +21,11 @@ const {
 
 import { getCircle } from "../implements";
 import GestureAware from './vendor/GestureAware';
-import attachTitleHandlers from './subparts/titles'
-import enableCoords from './coords/circular';
+
+import {
+	attachTitleHandlers,
+	enableCoords
+} from './subparts'
 
 export default class Pie extends Component{
 
@@ -30,7 +33,7 @@ export default class Pie extends Component{
 	  super(props);
 
 	  attachTitleHandlers.apply(this);
-	  enableCoords.apply(this);
+	  enableCoords('circular').apply(this);
 
 	  this.state = {
 	  	active:-1

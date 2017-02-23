@@ -13,9 +13,10 @@ import {
 import { getCircle } from "../implements";
 import GestureAware from './vendor/GestureAware';
 
-
-import attachTitleHandlers from './subparts/titles'
-import enableCoords from './coords/circular';
+import {
+	attachTitleHandlers,
+	enableCoords
+} from './subparts'
 
 const {
     Surface,
@@ -36,7 +37,7 @@ export default class Doughnut extends Component{
 	  super(props);
 
 	  attachTitleHandlers.apply(this);
-	  enableCoords.apply(this);
+	  enableCoords('circular').apply(this);
 
 	  this.state = {
 	  	progress:0
@@ -281,7 +282,7 @@ export default class Doughnut extends Component{
 			series
 		} = this.props;
 	
-		const {x,y} = getCircle(
+		const { x,y } = getCircle(
 			this.x,this.y,outerR+20
 		)( middleAngle );
 

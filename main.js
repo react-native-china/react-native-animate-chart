@@ -1,2 +1,2 @@
 import RNAChart from './chart';
-export default RNAChart;
+export default RNAChart

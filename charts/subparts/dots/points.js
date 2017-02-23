@@ -4,6 +4,8 @@ const { Shape,Path } = ART;
 
 class Basic extends Component{
 	constructor( x=0, y=0 ){
+		super(x,y);
+		
 		this.x = x;
 		this.y = y;
 		this.size = size;
@@ -11,32 +13,44 @@ class Basic extends Component{
 }
 
 export class Rect extends Basic{
-	return (
-		<Shape { this.props.style }></Shape>
-	)
+	render(){
+
+	}
 }
 
 export class Circle extends Basic{
 
-	return(
-		<Shape d={}></Shape>
-	)
+	render(){
+
+		return(
+				<Shape></Shape>
+			)
+	}
 }
 
 export class Diamond extends Basic{
-	return(
-		<Shape></Shape>
-	)	
+	render(){
+
+		return(
+				<Shape></Shape>
+			)
+	}
 }
 
 export class Triangle extends Basic{
-	return(
-		<Shape></Shape>
-	)
+	render(){
+
+		return(
+				<Shape></Shape>
+			)
+	}
 }
 
 export class Custom extends Basic{
-	return(
-		<Shape></Shape>
-	)
+	render(){
+
+		return(
+				<Shape></Shape>
+			)
+	}
 }
