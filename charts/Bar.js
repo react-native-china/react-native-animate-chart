@@ -231,7 +231,7 @@ export default class Bar extends Component{
 			xAxis,yAxis
 		} = this.barPos[highlight]
 
-		const tooltipText = this.props.tootip.text(highlight,this.props.series[highlight].data);
+		const tooltipText = this.props.tooltip.text(highlight,this.props.series[highlight].data);
 		const approximateTextLength = 8 * tooltipText.length;
 
 		const width = approximateTextLength + 10;

@@ -35,6 +35,8 @@ export default class Pie extends Component{
 	  this.state = {
 	  	active:-1
 	  }
+
+	  this.angles = [];
 	}
 
 	static propTypes = {
@@ -96,6 +98,7 @@ export default class Pie extends Component{
 					{ this.getPies() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
+					{ this.getTooltips() }
 				</Surface>
 			</GestureAware>
 		)
@@ -141,15 +144,21 @@ export default class Pie extends Component{
 		const deltaAngle = (data/this.sum)*Math.PI*2 * ( progress||0 );
 		const { start } = this;
 
+		const startAngle = start - Math.PI/2;
+		const endAngle = start+deltaAngle - Math.PI/2;
+
 		const circle = getCircle(x,y,r)
+		
+		this.angles[index] = [startAngle,endAngle];
 
 		let path = new Path()
 						.moveTo(x,y)
-						.lineTo(circle(start - Math.PI/2).x,circle(start - Math.PI/2).y)
-						.arcTo(circle(start+deltaAngle - Math.PI/2).x,circle(start+deltaAngle - Math.PI/2).y,r)
+						.lineTo(circle(startAngle).x,circle(startAngle).y)
+						.arcTo(circle(endAngle).x,circle(endAngle).y,r)
 						.close()
 
 		this.start += deltaAngle;
+
 
 		return path;
 	}
@@ -171,8 +180,6 @@ export default class Pie extends Component{
 			Math.pow(absX-x,2)+
 			Math.pow(absY-y,2)
 		);
-
-		console.log(distance);
 
 		if( distance < r ){
 			let angle = Math.atan2(absY-y,absX-x);
@@ -210,5 +217,45 @@ export default class Pie extends Component{
 				active:-1
 			})
 		}
+	}
+
+	getTooltips = () => {
+		if( !this.angles[this.state.active] ) return <Shape/>;
+
+		const {
+			r
+		} = this;
+
+		const {
+			tooltip,series
+		} = this.props;
+
+		const {
+			active
+		} = this.state;
+
+		const [
+			startAngle,
+			endAngle
+		] = this.angles[active]
+
+		const middleAngle = ( startAngle + endAngle )/2
+		
+		const align = middleAngle > Math.PI/2 ? "right" : 'left';
+
+		const {x,y} = getCircle(
+			this.x,this.y,r+20
+		)(middleAngle);
+
+		const nearlyLength = series[active].data.length * 10;
+
+		return <Text font={`10px "Helvetica Neue", "Helvetica", Arial`} 
+			fill = "#4D4D4D" 
+			alignment={ align }
+			x = { x }
+			y = { y }
+			>{
+				tooltip.text(active,series[active].data)
+			}</Text>
 	}
 }

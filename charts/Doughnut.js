@@ -41,6 +41,8 @@ export default class Doughnut extends Component{
 	  this.state = {
 	  	progress:0
 	  }
+
+	  this.angles = [];
 	}
 
 	static propTypes = {
@@ -109,6 +111,7 @@ export default class Doughnut extends Component{
 					{ this.getDoughnut() }
 					{ this.getTitle() }
 					{ this.getSubtitle() }
+					{ this.getTooltips() }
 				</Surface>
 			</GestureAware>
 		)
@@ -172,6 +175,8 @@ export default class Doughnut extends Component{
 
 		let path = new Path().moveTo(innerCircle(startAngle).x,innerCircle(startAngle).y)
 
+		this.angles[index] = [startAngle,endAngle];
+
 		// draw major part
 		if( endAngle - startAngle > Math.PI ){
 			const middleAngle = startAngle + Math.PI;
@@ -216,8 +221,6 @@ export default class Doughnut extends Component{
 			Math.pow(absY-y,2)
 		);
 
-		console.log(distance);
-
 		if( distance > innerR && distance < outerR ){
 			let angle = Math.atan2(absY-y,absX-x);
 			
@@ -254,5 +257,45 @@ export default class Doughnut extends Component{
 				active:-1
 			})
 		}
+	}
+
+	getTooltips = () => {
+		if( !this.angles[this.state.active] ) return <Shape/>;
+
+		const {
+			outerR
+		} = this;
+
+		const { 
+			active
+		} = this.state;
+
+		const [
+			startAngle,
+			endAngle
+		] = this.angles[active]
+
+		const middleAngle = ( startAngle + endAngle )/2;
+
+		const {
+			series
+		} = this.props;
+	
+		const {x,y} = getCircle(
+			this.x,this.y,outerR+20
+		)( middleAngle );
+
+		const nearlyLength = series[active].data.length * 10;
+
+		return <Text font={`10px "Helvetica Neue", "Helvetica", Arial`} 
+			fill = "#4D4D4D" 
+			alignment={ middleAngle > Math.PI/2 ? "right" : 'left' }
+			x = { x }
+			y = { y }
+			>{
+				this.props.tooltip.text(
+					active,series[active].data
+				)
+			}</Text>
 	}
 }
