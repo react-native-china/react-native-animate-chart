@@ -100,7 +100,6 @@ export default class Pie extends Component{
 				<Surface width={this.props.width} height={this.props.height} visible={true}>
 					{ this.getPies() }
 					{ this.getTitle() }
-					{ this.getSubtitle() }
 					{ this.getTooltips() }
 				</Surface>
 			</GestureAware>

@@ -111,7 +111,6 @@ export default class Doughnut extends Component{
 				<Surface width={ width } height={ height } visible={true}>
 					{ this.getDoughnut() }
 					{ this.getTitle() }
-					{ this.getSubtitle() }
 					{ this.getTooltips() }
 				</Surface>
 			</GestureAware>

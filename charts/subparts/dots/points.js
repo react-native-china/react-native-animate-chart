@@ -12,45 +12,38 @@ class Basic extends Component{
 	}
 }
 
-export class Rect extends Basic{
-	render(){
+export default {
 
-	}
-}
+	/*
+	 * Rectangle dot.
+	 */
+	 
 
-export class Circle extends Basic{
-
-	render(){
-
-		return(
-				<Shape></Shape>
-			)
-	}
-}
-
-export class Diamond extends Basic{
-	render(){
+	Rect:(x=10,y=10,w=10,h=10) => {
+		console.log(x,y,w,h);
 
 		return(
-				<Shape></Shape>
-			)
-	}
+			 <Shape d={
+							new Path()
+								.moveTo(10,10)
+								.lineTo(10+10,10)
+								.lineTo(10+10,10+10)
+								.lineTo(10,10+10)
+								.close()
+							} stroke="black"/>)
+	},
+
+	/*
+	 * Round dot.
+	 */
+
+	Circle:() => <Shape d={
+		new Path()
+			.moveTo(20,2)
+			.lineTo(100,10)
+		} stroke="black"/>
 }
 
-export class Triangle extends Basic{
-	render(){
-
-		return(
-				<Shape></Shape>
-			)
-	}
-}
-
-export class Custom extends Basic{
-	render(){
-
-		return(
-				<Shape></Shape>
-			)
-	}
-}
+// Diamond,
+// Triangle
+// Custom

@@ -45,7 +45,7 @@ export default class Bar extends Component{
 	  getTooltipBac.apply(this);
 	
 	  this.state = {
-	  	highlight:-1,
+	  	active:-1,
 	  	crossHair:{}
 	  };
 	}
@@ -119,7 +119,6 @@ export default class Bar extends Component{
 					{ this.getBars() }
 					{ this.getCoords() }
 					{ this.getTitle() }
-					{ this.getSubtitle() }
 					{ this.getCrossHair() }
 					{ this.getTooltips() }
 				</Surface>
@@ -140,17 +139,17 @@ export default class Bar extends Component{
 					key = { index }
 					d={ this.getBarD(data,index) }
 					fill={
-						this.state.highlight == index ?
+						this.state.active == index ?
 						data.activeFill : 
 						data.normalFill
 					}
 					stroke={
-						this.state.highlight == index ?
+						this.state.active == index ?
 						data.activeStroke : 
 						data.normalStroke
 					}
 
-					strokeWidth = {2}
+					strokeWidth = {1}
 
 					strokeCap="butt"
 					strokeJoin="miter"
@@ -215,28 +214,28 @@ export default class Bar extends Component{
 			const index = parseInt(relativeX/itemWidth);
 
 			this.setState({
-				highlight:index
+				active:index
 			})
 		}
 	}
 
 	getTooltips(){
 		const {
-			highlight
+			active
 		} = this.state;
 
-		if( highlight < 0 || highlight > this.props.series.length-1){
+		if( active < 0 || active > this.props.series.length-1){
 			return <Shape/>
 		}
 
 		const {
 			xAxis,yAxis
-		} = this.barPos[highlight]
+		} = this.barPos[active]
 
-		const tooltipText = this.props.tooltip.text(highlight,this.props.series[highlight].data);
+		const tooltipText = this.props.tooltip.text(active,this.props.series[active].data);
 		const approximateTextLength = 8 * tooltipText.length;
 
-		const width = approximateTextLength + 10;
+		const width = approximateTextLength;
 		const height = 8 + 10;
 
 		let xMiddle = xAxis+(this.itemWidth*0.3);
@@ -256,7 +255,7 @@ export default class Bar extends Component{
 			y:yMiddle - height/2,
 			width,
 			height,
-			r:12
+			r:5
 		})
 	}
 
@@ -275,7 +274,7 @@ export default class Bar extends Component{
 				x:-100,
 				y:-100,
 			},
-			highlight:-1
+			active:-1
 		})
 	}
 }

@@ -36,8 +36,7 @@ function getTooltipBac({
 					.lineTo(x,y + r)
 					.arcTo(x + r,y,r,r)
 					.close()
-
-			} fill="#029df9"/>
+			} fill="#029df9" strokeWidth="1" stroke="#444"/>
 
 			<Text font={`${fontSize}px "Courier-Bold", "Helvetica Neue", "Helvetica", Arial`} 
 				fill = "white"
